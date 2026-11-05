@@ -9,7 +9,12 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "db:push": "node scripts/db.mjs push",
+    "db:seed": "node scripts/db.mjs seed",
+    "db:status": "node scripts/db.mjs status",
+    "db:types": "node scripts/db.mjs types",
+    "test:db": "node scripts/db-smoke.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
