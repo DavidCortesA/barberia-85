@@ -93,6 +93,8 @@ Layout: barra lateral fija de 240 px (colapsable a iconos en tablet; menú infer
 
 **Citas:** tabla con filtros (estado, fecha, búsqueda por nombre o teléfono), paginación, acciones por fila en menú, diálogo de confirmación para rechazar/cancelar. Al confirmar se ofrece abrir WhatsApp con el mensaje prellenado.
 
+**Contenido del sitio (`/admin/content`):** todo texto y fotografía del sitio público se administra aquí (portada, servicios, nosotros, galería, contacto, reservaciones y SEO). Pestañas por sección, campos de texto con contador, campos de imagen con vista previa y subida, gestor de galería con reordenar/ocultar/eliminar, y enlace "Ver sitio". El formulario se genera desde `src/features/content/registry.ts`. Detalle en `docs/04-sitio-publico.md`.
+
 **Servicios, Barberos, Horarios, Configuración:** formularios en sheet lateral o página dedicada, con React Hook Form + Zod, subida de imagen con vista previa, interruptor activo/inactivo y confirmación antes de eliminar (se prefiere desactivar).
 
 ## 5. Inventario de componentes

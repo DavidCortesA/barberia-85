@@ -29,5 +29,7 @@ export function confirmationMessage(params: {
   dateText: string;
   timeText: string;
 }): string {
-  return `Hola, ${params.name}. Tu cita en 85 BARBERÍA ha sido confirmada para el día ${params.dateText} a las ${params.timeText}. ¡Te esperamos!`;
+  // "a. m." ya termina en punto: se quita para no duplicarlo antes de "¡Te esperamos!".
+  const time = params.timeText.replace(/\.$/, "");
+  return `Hola, ${params.name}. Tu cita en 85 BARBERÍA ha sido confirmada para el día ${params.dateText} a las ${time}. ¡Te esperamos!`;
 }

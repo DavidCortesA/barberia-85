@@ -133,6 +133,20 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"gallery_images": {
+                  Row: {
+                    "alt": string | null,"created_at": string,"id": string,"image_url": string,"is_active": boolean,"sort_order": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "alt"?: string | null,"created_at"?: string,"id"?: string,"image_url": string,"is_active"?: boolean,"sort_order"?: number
+                  }
+                  Update: {
+                    "alt"?: string | null,"created_at"?: string,"id"?: string,"image_url"?: string,"is_active"?: boolean,"sort_order"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"profiles": {
                   Row: {
                     "created_at": string,"full_name": string | null,"id": string,"role": Database["public"]['Enums']["user_role"]
@@ -171,6 +185,20 @@ isOneToOne: false
                   }
                   Update: {
                     "created_at"?: string,"description"?: string | null,"duration_minutes"?: number,"id"?: string,"image_url"?: string | null,"is_active"?: boolean,"name"?: string,"price"?: number,"sort_order"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"site_content": {
+                  Row: {
+                    "key": string,"updated_at": string,"value": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "key": string,"updated_at"?: string,"value"?: string
+                  }
+                  Update: {
+                    "key"?: string,"updated_at"?: string,"value"?: string
                   }
                   Relationships: [
                     
