@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>85 BARBERÍA · Tablero de diseño (Fase 2)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink-950:#090909;--ink-900:#141414;--ink-800:#202020;--ink-700:#2c2c2c;
+  --bone:#F5F3EF;--mute:#A1A1AA;
+  --amber-500:#FCA420;--amber-300:#FFC766;--amber-700:#B8730A;
+  --st-pending:#E6D94A;--st-confirmed:#3FB950;--st-rejected:#F0524F;--st-cancelled:#71717A;--st-completed:#4C9AFF;--st-expired:#52525B;
+  --line:rgba(245,243,239,.10);
+  --display:"Barlow Condensed",Impact,sans-serif;--body:"Manrope",system-ui,sans-serif;--serif:"Cormorant Garamond",Georgia,serif;
+}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--ink-950);color:var(--bone);font:400 16px/1.65 var(--body);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+.label{font:600 12px/1 var(--body);letter-spacing:.18em;text-transform:uppercase;color:var(--amber-500)}
+h1,h2,h3,.disp{font-family:var(--display);text-transform:uppercase;font-weight:700;line-height:.95;letter-spacing:.02em}
+.serif{font-family:var(--serif);font-style:italic;font-weight:500}
+.muted{color:var(--mute)}
+:focus-visible{outline:2px solid var(--amber-500);outline-offset:3px}
+
+/* board chrome */
+.board-nav{position:sticky;top:0;z-index:50;background:rgba(9,9,9,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.board-nav .wrap{display:flex;gap:20px;align-items:center;overflow-x:auto;height:52px;white-space:nowrap;font-size:13px}
+.board-nav a{color:var(--mute);text-decoration:none}.board-nav a:hover{color:var(--amber-300)}
+.board-nav img{height:26px}
+section.b{padding:72px 0;border-bottom:1px solid var(--line)}
+.b>.wrap>h2{font-size:clamp(2rem,4.5vw,3.25rem);margin:10px 0 8px}
+.b .lead{max-width:62ch;color:var(--mute);margin-bottom:36px}
+.note{border-left:2px solid var(--amber-500);padding:6px 14px;color:var(--mute);font-size:14px;margin-top:24px;max-width:70ch}
+.grid{display:grid;gap:16px}
+
+/* brand */
+.logo-stage{background:var(--ink-900);border:1px solid var(--line);display:grid;place-items:center;padding:48px;border-radius:4px}
+.logo-stage img{width:min(440px,100%)}
+.swatches{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-top:16px}
+.sw{border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--ink-900)}
+.sw i{display:block;height:72px}.sw div{padding:10px 12px;font-size:12.5px;line-height:1.45}
+.sw b{display:block;font-size:13px}.sw .c{color:var(--mute)}
+.chips{display:flex;flex-wrap:wrap;gap:10px}
+
+/* components */
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 22px;border-radius:3px;border:1px solid transparent;font:600 13px/1 var(--body);letter-spacing:.12em;text-transform:uppercase;text-decoration:none;cursor:pointer;transition:transform .15s,background .2s,color .2s,border-color .2s}
+.btn:active{transform:scale(.98)}
+.btn-p{background:var(--amber-500);color:var(--ink-950)}.btn-p:hover{background:var(--amber-300)}
+.btn-s{border-color:rgba(245,243,239,.35);color:var(--bone);background:transparent}.btn-s:hover{border-color:var(--amber-500);color:var(--amber-300)}
+.btn-g{color:var(--mute);background:transparent}.btn-g:hover{color:var(--bone)}
+.btn-sm{min-height:36px;padding:0 14px;font-size:11.5px}
+.field{display:grid;gap:6px;font-size:13px}
+.field span{color:var(--mute)}
+.input{height:46px;background:var(--ink-800);border:1px solid var(--ink-700);border-radius:3px;color:var(--bone);padding:0 14px;font:inherit;width:100%}
+.input:focus{outline:2px solid var(--amber-500);outline-offset:1px;border-color:transparent}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px 3px 8px;border-radius:999px;font:600 12px/1.5 var(--body);border:1px solid color-mix(in srgb,var(--c) 45%,transparent);background:color-mix(in srgb,var(--c) 14%,transparent);color:var(--c)}
+.badge svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.slot{min-width:76px;height:42px;display:grid;place-items:center;border:1px solid var(--ink-700);border-radius:3px;background:var(--ink-900);font-weight:600;font-size:14px;cursor:pointer;transition:border-color .2s,color .2s}
+.slot:hover{border-color:var(--amber-500)}
+.slot.on{background:var(--amber-500);color:var(--ink-950);border-color:var(--amber-500)}
+.slot.off{opacity:.35;text-decoration:line-through;cursor:not-allowed}
+.toast{display:flex;gap:12px;align-items:center;background:var(--ink-800);border:1px solid var(--ink-700);border-left:3px solid var(--st-confirmed);padding:12px 16px;border-radius:3px;font-size:14px;max-width:360px}
+.toast.err{border-left-color:var(--st-rejected)}
+
+/* photo placeholders */
+.ph{position:relative;background:repeating-linear-gradient(135deg,#1a1a1a 0 14px,#161616 14px 28px);border:1px solid var(--line);display:grid;place-items:center;color:#5d5d63;font:600 11px/1.3 var(--body);letter-spacing:.16em;text-transform:uppercase;text-align:center;padding:12px}
+
+/* mock frame */
+.frame{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--ink-950)}
+.frame>.bar{height:30px;background:var(--ink-900);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:6px;padding:0 12px}
+.frame>.bar i{width:9px;height:9px;border-radius:50%;background:#3a3a3a}
+.frame>.bar em{margin-left:10px;font:11px var(--body);color:var(--mute);font-style:normal}
+
+/* public mock */
+.m-head{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--line)}
+.m-head img{height:34px}.m-head nav{display:flex;gap:28px;font-size:13px;color:var(--mute)}
+.m-hero{display:grid;grid-template-columns:1.15fr 1fr;gap:40px;padding:56px 28px 64px;align-items:center}
+.m-hero h1{font-size:clamp(3rem,7vw,6rem);margin:16px 0 18px}
+.m-hero h1 em{font-style:normal;color:var(--amber-500)}
+.m-hero .serif{font-size:1.5rem;color:var(--amber-300);margin-bottom:26px}
+.m-hero .photo{position:relative;aspect-ratio:4/5}
+.m-hero .photo::before{content:"";position:absolute;inset:18px -18px -18px 18px;border:1px solid var(--amber-500);z-index:0}
+.m-hero .photo .ph{position:absolute;inset:0;z-index:1}
+.m-hero .big85{position:absolute;left:-26px;bottom:-30px;z-index:2;font:700 9rem/.8 var(--display);color:transparent;-webkit-text-stroke:2px var(--bone);opacity:.9}
+.m-svc{padding:56px 28px;background:var(--ink-900);border-block:1px solid var(--line)}
+.m-svc h2{font-size:3rem;margin:10px 0 28px}
+.cards{grid-template-columns:repeat(3,1fr)}
+.card{background:var(--ink-950);border:1px solid var(--line);border-radius:4px;overflow:hidden;transition:border-color .25s,transform .25s}
+.card:hover{border-color:rgba(252,164,32,.55);transform:translateY(-3px)}
+.card .ph{height:130px;border:0;border-bottom:1px solid var(--line)}
+.card .in{padding:18px}
+.card h3{font-size:1.5rem;margin-bottom:6px}
+.card p{color:var(--mute);font-size:14px;margin-bottom:14px}
+.card .row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.price{font:700 1.5rem/1 var(--display);color:var(--amber-300);letter-spacing:.03em}
+.dur{font-size:12.5px;color:var(--mute);display:inline-flex;gap:6px;align-items:center}
+.m-about{display:grid;grid-template-columns:1fr 1fr;gap:40px;padding:64px 28px;align-items:center}
+.m-about h2{font-size:3rem;margin:10px 0 14px}
+.m-gal{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:120px;gap:10px;padding:0 28px 64px}
+.m-gal .ph:nth-child(1){grid-column:span 2;grid-row:span 2}.m-gal .ph:nth-child(4){grid-row:span 2}
+.m-contact{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;padding:48px 28px;background:var(--ink-900);border-top:1px solid var(--line)}
+.m-contact h3{font-size:1.25rem;margin-bottom:8px;color:var(--amber-500)}
+.m-contact p{font-size:14px;color:var(--mute)}
+.m-foot{display:flex;justify-content:space-between;align-items:center;padding:20px 28px;border-top:1px solid var(--line);font-size:12.5px;color:var(--mute)}
+.m-foot img{height:26px}
+
+/* booking */
+.phones{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;justify-items:center}
+.phone{width:300px;border:1px solid var(--ink-700);border-radius:28px;background:var(--ink-950);padding:14px 14px 18px;min-height:560px;display:flex;flex-direction:column}
+.phone .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.phone .top img{height:22px}
+.steps{display:flex;gap:4px;margin-bottom:6px}.steps i{flex:1;height:3px;background:var(--ink-700);border-radius:2px}.steps i.d{background:var(--amber-500)}
+.phone h3{font-size:1.9rem;margin:10px 0 12px}
+.opt{display:flex;justify-content:space-between;gap:10px;padding:13px 14px;border:1px solid var(--ink-700);border-radius:3px;background:var(--ink-900);margin-bottom:8px;font-size:14px}
+.opt.on{border-color:var(--amber-500);background:rgba(252,164,32,.08)}
+.opt b{display:block;font-weight:600}.opt small{color:var(--mute)}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:12.5px}
+.cal span{height:34px;display:grid;place-items:center;border-radius:3px}
+.cal .h{color:var(--mute);height:22px;font-size:11px}.cal .x{color:#4a4a50}.cal .s{background:var(--amber-500);color:var(--ink-950);font-weight:700}
+.cal .a{background:var(--ink-900)}
+.phone .sp{flex:1}
+.sum{border:1px dashed var(--ink-700);padding:12px;border-radius:3px;font-size:13px;color:var(--mute);margin-bottom:10px}
+.sum b{color:var(--bone)}
+
+/* admin */
+.adm{display:grid;grid-template-columns:200px 1fr;min-height:560px}
+.side{background:var(--ink-900);border-right:1px solid var(--line);padding:16px 12px;display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.side img{height:26px;margin:4px 6px 16px;align-self:flex-start}
+.side a{display:flex;gap:10px;align-items:center;padding:9px 10px;border-radius:3px;color:var(--mute);text-decoration:none}
+.side a.on{background:var(--ink-800);color:var(--bone);box-shadow:inset 2px 0 var(--amber-500)}
+.side svg,.ic{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.main{padding:22px}
+.main h3.pt{font-size:2rem;margin-bottom:16px}
+.kpis{grid-template-columns:repeat(4,1fr);margin-bottom:18px}
+.kpi{background:var(--ink-900);border:1px solid var(--line);border-radius:4px;padding:14px}
+.kpi small{color:var(--mute);font-size:12px;display:flex;gap:6px;align-items:center}
+.kpi b{display:block;font:700 2.6rem/1.1 var(--display);margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--mute);font-weight:600;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+.panel{background:var(--ink-900);border:1px solid var(--line);border-radius:4px;padding:6px 8px;overflow-x:auto}
+.spark{display:flex;gap:6px;align-items:flex-end;height:60px;margin-top:10px}
+.spark i{flex:1;background:var(--ink-700);border-radius:2px 2px 0 0}.spark i.t{background:var(--amber-500)}
+
+/* calendar mock */
+.cal-tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.seg{display:inline-flex;border:1px solid var(--ink-700);border-radius:3px;overflow:hidden}.seg a{padding:7px 14px;font-size:12.5px;color:var(--mute);text-decoration:none}.seg a.on{background:var(--ink-800);color:var(--bone)}
+.wk{display:grid;grid-template-columns:48px repeat(6,1fr);border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--ink-900);font-size:11.5px}
+.wk .hd{padding:8px 6px;text-align:center;color:var(--mute);border-bottom:1px solid var(--line);border-left:1px solid var(--line)}
+.wk .hd.today{color:var(--amber-300)}
+.wk .tm{color:var(--mute);height:46px;text-align:right;padding:2px 6px;border-top:1px solid var(--line)}
+.wk .col{position:relative;border-left:1px solid var(--line);height:414px;background:repeating-linear-gradient(to bottom,transparent 0 45px,var(--line) 45px 46px)}
+.ev{position:absolute;left:3px;right:3px;border-radius:3px;padding:4px 6px;font-size:11px;line-height:1.3;border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 18%,#141414);color:var(--bone);overflow:hidden}
+.ev b{display:block;color:var(--c);font-weight:700}
+.ev.blk{background:repeating-linear-gradient(135deg,#202020 0 6px,#181818 6px 12px);border-left-color:#555;color:var(--mute)}
+.off-h{position:absolute;left:0;right:0;background:rgba(0,0,0,.45)}
+
+/* inventory */
+.inv{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.inv div{background:var(--ink-900);border:1px solid var(--line);border-radius:4px;padding:16px}
+.inv h3{font-size:1.2rem;color:var(--amber-500);margin-bottom:8px}
+.inv p{font-size:13px;color:var(--mute);line-height:1.7}
+
+@media (max-width:900px){
+  .m-hero,.m-about{grid-template-columns:1fr}.cards,.m-contact{grid-template-columns:1fr}.m-gal{grid-template-columns:repeat(2,1fr)}
+  .m-head nav{display:none}.adm{grid-template-columns:1fr}.side{flex-direction:row;overflow-x:auto}.side img{display:none}.kpis{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M6 6l12 12"/></symbol>
+  <symbol id="i-done" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></symbol>
+  <symbol id="i-hourglass" viewBox="0 0 24 24"><path d="M7 4h10M7 20h10M8 4c0 5 8 5 8 8s-8 3-8 8M16 4c0 5-8 5-8 8"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7v9H4z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+  <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></symbol>
+  <symbol id="i-scissors" viewBox="0 0 24 24"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4L8.1 15.9M14.5 14.5L20 20M8.1 8.1L12 12"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8z"/><path d="M9 9c0 3 3 6 6 6l1-1.5-2-1-1 .8c-1-.5-1.8-1.3-2.3-2.3l.8-1-1-2z"/></symbol>
+</svg>
+
+<header class="board-nav"><div class="wrap">
+  <img src="../../public/brand/logo-85-barberia.png" alt="85 BARBERÍA">
+  <a href="#marca">Marca</a><a href="#tipo">Tipografía</a><a href="#componentes">Componentes</a><a href="#publico">Sitio público</a><a href="#reserva">Reserva</a><a href="#dashboard">Dashboard</a><a href="#calendario">Calendario</a><a href="#inventario">Inventario</a>
+</div></header>
+
+<section class="b" id="marca"><div class="wrap">
+  <span class="label">Fase 2 · Diseño</span>
+  <h2>Marca y color</h2>
+  <p class="lead">El ámbar sale del logo real (muestreado del PNG: <code>#FCA420</code>). Neutros casi negros; el acento aparece en un solo elemento primario por pantalla.</p>
+  <div class="logo-stage"><img src="../../public/brand/logo-85-barberia.png" alt="Logo 85 BARBERÍA"></div>
+  <div class="grid swatches" id="sw"></div>
+  <p class="note">Contrastes calculados en vivo en esta página (WCAG). Los estados de cita siempre llevan icono y texto además del color; "pendiente" es amarillo-limón para no confundirse con el ámbar de marca.</p>
+  <h3 style="font-size:1.4rem;margin:36px 0 12px">Estados de cita</h3>
+  <div class="chips" id="status"></div>
+</div></section>
+
+<section class="b" id="tipo"><div class="wrap">
+  <span class="label">Tipografía</span>
+  <h2>Condensada, afilada, con un toque editorial</h2>
+  <p class="lead">Barlow Condensed hace eco del logo; Manrope da legibilidad a la interfaz; Cormorant cursiva aparece una vez por sección, como firma.</p>
+  <div class="grid" style="gap:28px">
+    <div><span class="muted" style="font-size:12px">Display · hero</span><div class="disp" style="font-size:clamp(3.5rem,10vw,8rem)">El corte que <span style="color:var(--amber-500)">te define</span></div></div>
+    <div><span class="muted" style="font-size:12px">Display · h2</span><div class="disp" style="font-size:clamp(2.25rem,5vw,4rem)">Servicios · Nosotros · Contacto</div></div>
+    <div class="serif" style="font-size:2rem;color:var(--amber-300)">Precisión, calma y buena conversación.</div>
+    <p style="max-width:60ch">Manrope 400/16px. Reservamos tu lugar con una solicitud sencilla: eliges servicio, día y hora, y te confirmamos por WhatsApp. <span class="muted">Texto secundario en gris #A1A1AA.</span></p>
+  </div>
+  <p class="note">Textos de ejemplo, no son copy definitivo.</p>
+</div></section>
+
+<section class="b" id="componentes"><div class="wrap">
+  <span class="label">Biblioteca</span>
+  <h2>Componentes base</h2>
+  <p class="lead">Esquinas de 3 px, bordes de 1 px, sin sombras; la elevación se marca con superficie y borde.</p>
+  <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:28px">
+    <div class="grid"><span class="label">Botones</span>
+      <div class="chips"><a class="btn btn-p" href="#componentes">Reservar cita</a><a class="btn btn-s" href="#componentes">Ver servicios</a><a class="btn btn-g" href="#componentes">Cancelar</a></div>
+      <div class="chips"><a class="btn btn-p btn-sm" href="#componentes">Confirmar</a><a class="btn btn-s btn-sm" href="#componentes"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp</a></div>
+    </div>
+    <div class="grid"><span class="label">Formulario</span>
+      <label class="field"><span>Nombre</span><input class="input" value="Nombre del cliente" aria-label="Nombre"></label>
+      <label class="field"><span>Teléfono (10 dígitos)</span><input class="input" placeholder="81 0000 0000" aria-label="Teléfono"></label>
+    </div>
+    <div class="grid"><span class="label">Horarios</span>
+      <div class="chips"><span class="slot">10:00</span><span class="slot on">10:30</span><span class="slot">11:00</span><span class="slot off">11:30</span><span class="slot">12:00</span></div>
+      <span class="muted" style="font-size:12.5px">Libre · seleccionado · ocupado</span>
+    </div>
+    <div class="grid"><span class="label">Notificaciones</span>
+      <div class="toast"><svg class="ic" style="color:var(--st-confirmed)"><use href="#i-check"/></svg>Solicitud enviada. Te confirmaremos por WhatsApp.</div>
+      <div class="toast err"><svg class="ic" style="color:var(--st-rejected)"><use href="#i-x"/></svg>Ese horario ya no está disponible.</div>
+    </div>
+  </div>
+</div></section>
+
+<section class="b" id="publico"><div class="wrap">
+  <span class="label">Sitio público</span>
+  <h2>Home en escritorio</h2>
+  <p class="lead">Composición editorial: titular enorme, foto vertical con marco ámbar desplazado y un "85" en contorno que repite el logo. Fotos y textos son placeholders.</p>
+  <div class="frame">
+    <div class="bar"><i></i><i></i><i></i><em>85barberia.mx</em></div>
+    <div class="m-head"><img src="../../public/brand/logo-85-barberia.png" alt="85 BARBERÍA"><nav><span>Inicio</span><span>Servicios</span><span>Nosotros</span><span>Contacto</span></nav><a class="btn btn-p btn-sm" href="#publico">Reservar cita</a></div>
+    <div class="m-hero">
+      <div><span class="label">Barbería · [ciudad por definir]</span>
+        <h1>El corte<br>que <em>te define</em></h1>
+        <p class="serif">Precisión, calma y buena conversación.</p>
+        <p class="muted" style="max-width:46ch;margin-bottom:26px">Texto breve de presentación. [Copy temporal: se reemplaza con el definitivo del negocio.]</p>
+        <div class="chips"><a class="btn btn-p" href="#publico">Reservar cita</a><a class="btn btn-s" href="#publico">Ver servicios</a></div></div>
+      <div class="photo"><div class="ph">Foto hero<br>vertical 4:5</div><div class="big85" aria-hidden="true">85</div></div>
+    </div>
+    <div class="m-svc"><span class="label">Servicios</span><h2>Lo que hacemos</h2>
+      <div class="grid cards">
+        <div class="card"><div class="ph">Imagen opcional</div><div class="in"><h3>[Ejemplo] Corte clásico</h3><p>Descripción breve del servicio.</p><div class="row"><span class="dur"><svg class="ic"><use href="#i-clock"/></svg>45 min</span><span class="price">$ — </span></div><a class="btn btn-s btn-sm" style="margin-top:14px" href="#publico">Reservar</a></div></div>
+        <div class="card"><div class="ph">Imagen opcional</div><div class="in"><h3>[Ejemplo] Barba</h3><p>Descripción breve del servicio.</p><div class="row"><span class="dur"><svg class="ic"><use href="#i-clock"/></svg>30 min</span><span class="price">$ — </span></div><a class="btn btn-s btn-sm" style="margin-top:14px" href="#publico">Reservar</a></div></div>
+        <div class="card"><div class="ph">Imagen opcional</div><div class="in"><h3>[Ejemplo] Corte + barba</h3><p>Descripción breve del servicio.</p><div class="row"><span class="dur"><svg class="ic"><use href="#i-clock"/></svg>60 min</span><span class="price">$ — </span></div><a class="btn btn-s btn-sm" style="margin-top:14px" href="#publico">Reservar</a></div></div>
+      </div></div>
+    <div class="m-about"><div class="ph" style="aspect-ratio:4/3">Foto instalaciones</div><div><span class="label">Nosotros</span><h2>Oficio y detalle</h2><p class="muted">Texto de filosofía y experiencia. [Pendiente de contenido real del negocio.]</p></div></div>
+    <div class="m-gal"><div class="ph">Trabajo</div><div class="ph">Trabajo</div><div class="ph">Local</div><div class="ph">Trabajo</div><div class="ph">Trabajo</div><div class="ph">Local</div></div>
+    <div class="m-contact" id="c"><div><h3>Ubicación</h3><p>[Dirección por definir]<br>Enlace a Google Maps</p></div><div><h3>Horarios</h3><p>Se leen de la configuración del admin.</p></div><div><h3>Contacto</h3><p><a class="btn btn-s btn-sm" href="#c"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp</a></p></div></div>
+    <div class="m-foot"><img src="../../public/brand/logo-85-barberia.png" alt=""><span>© 85 BARBERÍA · Navegación · Redes</span></div>
+  </div>
+</div></section>
+
+<section class="b" id="reserva"><div class="wrap">
+  <span class="label">Reserva</span>
+  <h2>Cinco pasos, un pulgar</h2>
+  <p class="lead">Barra de progreso fija, un paso por pantalla, botón principal siempre abajo. Aviso explícito de que es una solicitud pendiente de confirmación.</p>
+  <div class="phones">
+    <div class="phone"><div class="top"><img src="../../public/brand/logo-85-barberia.png" alt=""><span class="muted" style="font-size:12px">1 de 5</span></div><div class="steps"><i class="d"></i><i></i><i></i><i></i><i></i></div>
+      <h3>Elige tu servicio</h3>
+      <div class="opt on"><div><b>[Ejemplo] Corte clásico</b><small>45 min</small></div><b class="price">$ —</b></div>
+      <div class="opt"><div><b>[Ejemplo] Barba</b><small>30 min</small></div><b class="price">$ —</b></div>
+      <div class="opt"><div><b>[Ejemplo] Corte + barba</b><small>60 min</small></div><b class="price">$ —</b></div>
+      <div class="sp"></div><a class="btn btn-p" style="justify-content:center" href="#reserva">Continuar</a></div>
+    <div class="phone"><div class="top"><img src="../../public/brand/logo-85-barberia.png" alt=""><span class="muted" style="font-size:12px">2 de 5</span></div><div class="steps"><i class="d"></i><i class="d"></i><i></i><i></i><i></i></div>
+      <h3>Elige el día</h3>
+      <div class="cal" id="cal"></div>
+      <div class="sp"></div><a class="btn btn-p" style="justify-content:center" href="#reserva">Continuar</a></div>
+    <div class="phone"><div class="top"><img src="../../public/brand/logo-85-barberia.png" alt=""><span class="muted" style="font-size:12px">3 de 5</span></div><div class="steps"><i class="d"></i><i class="d"></i><i class="d"></i><i></i><i></i></div>
+      <h3>Elige la hora</h3>
+      <p class="muted" style="font-size:13px;margin-bottom:10px">Horarios disponibles · hora de Monterrey</p>
+      <div class="chips" aria-live="polite"><span class="slot">10:00</span><span class="slot">10:30</span><span class="slot on">11:00</span><span class="slot off">11:30</span><span class="slot">12:00</span><span class="slot">12:30</span><span class="slot off">13:00</span><span class="slot">16:00</span></div>
+      <div class="sp"></div><a class="btn btn-p" style="justify-content:center" href="#reserva">Continuar</a></div>
+    <div class="phone"><div class="top"><img src="../../public/brand/logo-85-barberia.png" alt=""><span class="muted" style="font-size:12px">5 de 5</span></div><div class="steps"><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i><i class="d"></i></div>
+      <h3>Revisa y envía</h3>
+      <div class="sum"><b>[Ejemplo] Corte clásico</b><br>Jueves 12 · 11:00 · 45 min<br>Cliente: Nombre · 81 0000 0000</div>
+      <div class="note" style="margin:0 0 10px">Es una <b>solicitud</b>: la barbería la confirma por WhatsApp.</div>
+      <div class="sp"></div><a class="btn btn-p" style="justify-content:center" href="#reserva">Enviar solicitud</a></div>
+  </div>
+</div></section>
+
+<section class="b" id="dashboard"><div class="wrap">
+  <span class="label">Admin</span>
+  <h2>Dashboard</h2>
+  <p class="lead">Más denso y funcional que el sitio público. Cuatro cifras, próximas citas con acciones rápidas y una franja semanal; sin gráficas decorativas.</p>
+  <div class="frame"><div class="bar"><i></i><i></i><i></i><em>/admin</em></div>
+    <div class="adm">
+      <aside class="side"><img src="../../public/brand/logo-85-barberia.png" alt="">
+        <a class="on" href="#dashboard"><svg><use href="#i-home"/></svg>Dashboard</a><a href="#dashboard"><svg><use href="#i-cal"/></svg>Calendario</a><a href="#dashboard"><svg><use href="#i-list"/></svg>Citas</a><a href="#dashboard"><svg><use href="#i-scissors"/></svg>Servicios</a><a href="#dashboard"><svg><use href="#i-user"/></svg>Barberos</a><a href="#dashboard"><svg><use href="#i-clock"/></svg>Horarios</a><a href="#dashboard"><svg><use href="#i-gear"/></svg>Configuración</a></aside>
+      <div class="main"><h3 class="pt">Resumen</h3>
+        <div class="grid kpis">
+          <div class="kpi"><small><svg class="ic"><use href="#i-cal"/></svg>Hoy</small><b>6</b></div>
+          <div class="kpi"><small style="color:var(--st-pending)"><svg class="ic"><use href="#i-clock"/></svg>Pendientes</small><b>3</b></div>
+          <div class="kpi"><small style="color:var(--st-confirmed)"><svg class="ic"><use href="#i-check"/></svg>Confirmadas</small><b>14</b></div>
+          <div class="kpi"><small><svg class="ic"><use href="#i-ban"/></svg>Canceladas</small><b>1</b></div>
+        </div>
+        <div class="panel"><table><thead><tr><th>Cliente</th><th>Servicio</th><th>Fecha</th><th>Estado</th><th></th></tr></thead><tbody>
+          <tr><td>Cliente de ejemplo A<br><span class="muted">81 0000 0001</span></td><td>[Ejemplo] Corte</td><td>Hoy · 11:00</td><td><span class="badge" style="--c:var(--st-pending)"><svg><use href="#i-clock"/></svg>Pendiente</span></td><td style="white-space:nowrap"><a class="btn btn-p btn-sm" href="#dashboard">Confirmar</a> <a class="btn btn-g btn-sm" href="#dashboard">Rechazar</a></td></tr>
+          <tr><td>Cliente de ejemplo B<br><span class="muted">81 0000 0002</span></td><td>[Ejemplo] Barba</td><td>Hoy · 12:30</td><td><span class="badge" style="--c:var(--st-confirmed)"><svg><use href="#i-check"/></svg>Confirmada</span></td><td><a class="btn btn-s btn-sm" href="#dashboard"><svg class="ic"><use href="#i-wa"/></svg>WhatsApp</a></td></tr>
+          <tr><td>Cliente de ejemplo C<br><span class="muted">81 0000 0003</span></td><td>[Ejemplo] Corte + barba</td><td>Mañana · 16:00</td><td><span class="badge" style="--c:var(--st-pending)"><svg><use href="#i-clock"/></svg>Pendiente</span></td><td style="white-space:nowrap"><a class="btn btn-p btn-sm" href="#dashboard">Confirmar</a> <a class="btn btn-g btn-sm" href="#dashboard">Rechazar</a></td></tr>
+        </tbody></table></div>
+        <div class="kpi" style="margin-top:14px"><small>Últimos 7 días</small><div class="spark"><i style="height:40%"></i><i style="height:65%"></i><i style="height:50%"></i><i style="height:80%"></i><i style="height:35%"></i><i style="height:70%"></i><i class="t" style="height:90%"></i></div></div>
+      </div></div></div>
+</div></section>
+
+<section class="b" id="calendario"><div class="wrap">
+  <span class="label">Admin</span>
+  <h2>Calendario</h2>
+  <p class="lead">FullCalendar con vistas mes/semana/día. Color por estado, bloqueos como bandas rayadas y horas fuera de atención atenuadas. Clic en un evento abre un panel lateral con el detalle.</p>
+  <div class="frame"><div class="bar"><i></i><i></i><i></i><em>/admin/calendar</em></div>
+    <div class="main">
+      <div class="cal-tools"><div class="chips"><span class="seg"><a href="#calendario">Mes</a><a class="on" href="#calendario">Semana</a><a href="#calendario">Día</a></span><span class="seg"><a href="#calendario">‹</a><a href="#calendario">Hoy</a><a href="#calendario">›</a></span></div>
+        <div class="chips"><span class="badge" style="--c:var(--st-pending)"><svg><use href="#i-clock"/></svg>Pendiente</span><span class="badge" style="--c:var(--st-confirmed)"><svg><use href="#i-check"/></svg>Confirmada</span><span class="badge" style="--c:var(--st-completed)"><svg><use href="#i-done"/></svg>Completada</span><span class="badge" style="--c:var(--st-cancelled)"><svg><use href="#i-ban"/></svg>Cancelada</span></div></div>
+      <div class="wk" id="wk"></div>
+    </div></div>
+</div></section>
+
+<section class="b" id="inventario"><div class="wrap">
+  <span class="label">Inventario</span>
+  <h2>Componentes a construir</h2>
+  <p class="lead">Detalle completo en <code>docs/02-diseno.md</code>. Un solo <code>StatusBadge</code> para dashboard, tabla, calendario y panel.</p>
+  <div class="grid inv">
+    <div><h3>shadcn/ui</h3><p>Button, Input, Textarea, Select, Switch, Dialog, AlertDialog, Sheet, DropdownMenu, Tabs, Calendar, Popover, Table, Badge, Skeleton, Sonner, Form.</p></div>
+    <div><h3>shared</h3><p>Logo, Container, SectionHeading, StatusBadge, EmptyState, ErrorState, PriceTag, DurationTag, WhatsAppButton, Reveal.</p></div>
+    <div><h3>public</h3><p>SiteHeader, MobileNav, Hero, ServiceCard, ServicesGrid, AboutSection, GalleryGrid, ContactBlock, SiteFooter, BookingWizard, SlotPicker, BookingSuccess.</p></div>
+    <div><h3>admin</h3><p>AdminSidebar, KpiCard, UpcomingList, AppointmentsTable, AppointmentSheet, CalendarView, StatusFilterChips, ServiceForm, BarberForm, WeeklyHoursEditor, ExceptionsEditor, SettingsForm, ImageUpload.</p></div>
+  </div>
+</div></section>
+
+<script>
+(function(){
+  function lum(h){var c=[1,3,5].map(function(i){var v=parseInt(h.substr(i,2),16)/255;return v<=.03928?v/12.92:Math.pow((v+.055)/1.055,2.4)});return .2126*c[0]+.7152*c[1]+.0722*c[2]}
+  function ratio(a,b){var x=lum(a),y=lum(b);return ((Math.max(x,y)+.05)/(Math.min(x,y)+.05))}
+  var S=[["ink-950","#090909","Fondo base"],["ink-900","#141414","Superficie"],["ink-800","#202020","Elevada / inputs"],["ink-700","#2C2C2C","Bordes"],["bone","#F5F3EF","Texto"],["mute","#A1A1AA","Texto secundario"],["amber-500","#FCA420","Acento (logo)"],["amber-300","#FFC766","Hover"],["amber-700","#B8730A","Pressed"]];
+  var el=document.getElementById("sw");
+  S.forEach(function(s){var r=ratio(s[1],"#090909").toFixed(1);var d=document.createElement("div");d.className="sw";d.innerHTML='<i style="background:'+s[1]+'"></i><div><b>'+s[0]+'</b>'+s[1]+'<br><span class="c">'+s[2]+' · '+r+':1 sobre #090909</span></div>';el.appendChild(d)});
+  var ST=[["Pendiente","#E6D94A","clock"],["Confirmada","#3FB950","check"],["Rechazada","#F0524F","x"],["Cancelada","#71717A","ban"],["Completada","#4C9AFF","done"],["Vencida","#52525B","hourglass"]];
+  var st=document.getElementById("status");
+  ST.forEach(function(s){var sp=document.createElement("span");sp.className="badge";sp.style.setProperty("--c",s[1]);sp.innerHTML='<svg><use href="#i-'+s[2]+'"/></svg>'+s[0];st.appendChild(sp)});
+  // booking calendar
+  var cal=document.getElementById("cal"),h=["L","M","M","J","V","S","D"].map(function(x){return '<span class="h">'+x+'</span>'}).join("");
+  var cells="";for(var i=0;i<2;i++)cells+='<span></span>';
+  for(var d=1;d<=30;d++){var cls=d<5?"x":(d===12?"s":(d%7===0?"x":"a"));cells+='<span class="'+cls+'">'+d+'</span>'}
+  cal.innerHTML=h+cells;
+  // week grid (10:00-19:00, 9 rows x 46px)
+  var wk=document.getElementById("wk"),days=["Lun 9","Mar 10","Mié 11","Jue 12","Vie 13","Sáb 14"],hr="";
+  hr+='<div class="hd" style="border-left:0"></div>'+days.map(function(d,i){return '<div class="hd'+(i===3?' today':'')+'">'+d+'</div>'}).join("");
+  var times="";for(var t=10;t<19;t++)times+='<div class="tm">'+t+':00</div>';
+  var cols=[
+    [[0,1,"--st-confirmed","Corte [ej.]"],[2.5,1,"--st-completed","Barba [ej.]"]],
+    [[1,1.5,"--st-confirmed","Corte+barba [ej.]"]],
+    [[0.5,1,"--st-cancelled","Cancelada"],[4,1,"--st-pending","Corte [ej.]"]],
+    [[1,1,"--st-pending","Corte [ej.]"],[2.5,1,"--st-confirmed","Barba [ej.]"],[5,1.5,"BLK","Bloqueo: comida"]],
+    [[3,1,"--st-confirmed","Corte [ej.]"]],
+    [[0,1,"--st-pending","Corte [ej.]"],[1,1,"--st-confirmed","Corte [ej.]"],[2,1.5,"--st-confirmed","Corte+barba [ej.]"]]
+  ];
+  var body='<div>'+times+'</div>'+cols.map(function(c){return '<div class="col">'+c.map(function(e){var blk=e[2]==="BLK";return '<div class="ev'+(blk?' blk':'')+'" style="top:'+(e[0]*46)+'px;height:'+(e[1]*46-3)+'px;'+(blk?'':'--c:var('+e[2]+')')+'">'+(blk?'':'<b>'+(10+Math.floor(e[0]))+':'+(e[0]%1?'30':'00')+'</b>')+e[3]+'</div>'}).join("")+'<div class="off-h" style="top:368px;height:46px"></div></div>'}).join("");
+  wk.innerHTML=hr+'<div style="grid-column:1/-1;display:grid;grid-template-columns:48px repeat(6,1fr)">'+body+'</div>';
+})();
+</script>
+</body>
+</html>
