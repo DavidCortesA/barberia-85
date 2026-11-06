@@ -25,9 +25,11 @@ export type ContentField = {
 export const contentSections = [
   { id: "hero", label: "Portada", description: "Lo primero que ve el visitante." },
   { id: "services", label: "Servicios", description: "Encabezado de la sección de servicios." },
+  { id: "process", label: "Cómo reservar", description: "Los pasos para reservar, con íconos." },
   { id: "about", label: "Nosotros", description: "Presentación de la barbería." },
   { id: "gallery", label: "Galería", description: "Encabezado. Las fotos se administran aparte." },
   { id: "contact", label: "Contacto", description: "Encabezado de la sección de contacto." },
+  { id: "cta", label: "Llamado final", description: "Bloque grande antes del contacto que invita a reservar." },
   { id: "booking", label: "Reservaciones", description: "Textos del flujo de reserva." },
   { id: "seo", label: "Buscadores (SEO)", description: "Título y descripción en Google." },
 ] as const;
@@ -42,6 +44,7 @@ export const contentFields = [
   { key: "hero.cta_primary", section: "hero", label: "Botón principal", type: "text", default: "Reservar cita", maxLength: 30 },
   { key: "hero.cta_secondary", section: "hero", label: "Botón secundario", type: "text", default: "Ver servicios", maxLength: 30 },
   { key: "hero.image", section: "hero", label: "Fotografía de portada", type: "image", default: "", hint: "Vertical (4:5), mínimo 1200 px de alto." },
+  { key: "hero.image_alt", section: "hero", label: "Descripción de la foto de portada", type: "text", default: "Interior de 85 BARBERÍA", maxLength: 140, hint: "Qué se ve en la foto, para lectores de pantalla y Google." },
 
   // Servicios
   { key: "services.eyebrow", section: "services", label: "Etiqueta superior", type: "text", default: "Servicios", maxLength: 40 },
@@ -53,6 +56,23 @@ export const contentFields = [
   { key: "about.title", section: "about", label: "Título", type: "text", default: "Oficio y detalle", maxLength: 60 },
   { key: "about.body", section: "about", label: "Texto", type: "textarea", default: "Texto temporal: cuenta aquí la historia, la filosofía y la experiencia de la barbería. Se edita desde el panel de administración.", maxLength: 1500, hint: "Separa los párrafos con una línea en blanco." },
   { key: "about.image", section: "about", label: "Fotografía", type: "image", default: "", hint: "Horizontal (4:3) o vertical; se recorta al centro." },
+  { key: "about.image_alt", section: "about", label: "Descripción de la fotografía", type: "text", default: "El equipo de 85 BARBERÍA", maxLength: 140, hint: "Qué se ve en la foto, para lectores de pantalla y Google." },
+
+  // Cómo reservar
+  { key: "process.eyebrow", section: "process", label: "Etiqueta superior", type: "text", default: "Cómo reservar", maxLength: 40 },
+  { key: "process.title", section: "process", label: "Título", type: "text", default: "Tu cita en cuatro pasos", maxLength: 60 },
+  { key: "process.step1_title", section: "process", label: "Paso 1 · título", type: "text", default: "Elige tu servicio", maxLength: 40 },
+  { key: "process.step1_text", section: "process", label: "Paso 1 · texto", type: "textarea", default: "Revisa precios y duración, y escoge lo que necesitas.", maxLength: 160 },
+  { key: "process.step1_image", section: "process", label: "Paso 1 · foto de fondo", type: "image", default: "", hint: "Opcional. Se muestra en blanco y negro y a color al pasar el cursor. Sin foto, la tarjeta queda lisa." },
+  { key: "process.step2_title", section: "process", label: "Paso 2 · título", type: "text", default: "Escoge día y hora", maxLength: 40 },
+  { key: "process.step2_text", section: "process", label: "Paso 2 · texto", type: "textarea", default: "Ves en el momento los horarios que siguen libres.", maxLength: 160 },
+  { key: "process.step2_image", section: "process", label: "Paso 2 · foto de fondo", type: "image", default: "", hint: "Opcional. Se muestra en blanco y negro y a color al pasar el cursor. Sin foto, la tarjeta queda lisa." },
+  { key: "process.step3_title", section: "process", label: "Paso 3 · título", type: "text", default: "Te confirmamos", maxLength: 40 },
+  { key: "process.step3_text", section: "process", label: "Paso 3 · texto", type: "textarea", default: "La barbería revisa tu solicitud y te confirma por WhatsApp.", maxLength: 160 },
+  { key: "process.step3_image", section: "process", label: "Paso 3 · foto de fondo", type: "image", default: "", hint: "Opcional. Se muestra en blanco y negro y a color al pasar el cursor. Sin foto, la tarjeta queda lisa." },
+  { key: "process.step4_title", section: "process", label: "Paso 4 · título", type: "text", default: "Llega y siéntate", maxLength: 40 },
+  { key: "process.step4_text", section: "process", label: "Paso 4 · texto", type: "textarea", default: "Te esperamos a la hora acordada. Del resto nos encargamos.", maxLength: 160 },
+  { key: "process.step4_image", section: "process", label: "Paso 4 · foto de fondo", type: "image", default: "", hint: "Opcional. Se muestra en blanco y negro y a color al pasar el cursor. Sin foto, la tarjeta queda lisa." },
 
   // Galería
   { key: "gallery.eyebrow", section: "gallery", label: "Etiqueta superior", type: "text", default: "Galería", maxLength: 40 },
@@ -62,6 +82,11 @@ export const contentFields = [
   { key: "contact.eyebrow", section: "contact", label: "Etiqueta superior", type: "text", default: "Contacto", maxLength: 40 },
   { key: "contact.title", section: "contact", label: "Título", type: "text", default: "Visítanos", maxLength: 60 },
   { key: "contact.subtitle", section: "contact", label: "Subtítulo", type: "text", default: "Agenda en línea o escríbenos por WhatsApp.", maxLength: 140 },
+
+  // Llamado final
+  { key: "cta.eyebrow", section: "cta", label: "Etiqueta superior", type: "text", default: "Tu lugar te espera", maxLength: 40 },
+  { key: "cta.title", section: "cta", label: "Título", type: "text", default: "¿Listo para tu próximo corte?", maxLength: 60 },
+  { key: "cta.subtitle", section: "cta", label: "Subtítulo", type: "text", default: "Aparta tu horario en menos de un minuto.", maxLength: 120 },
 
   // Reservaciones
   { key: "booking.title", section: "booking", label: "Título de la página", type: "text", default: "Reserva tu cita", maxLength: 60 },

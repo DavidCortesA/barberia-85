@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { ExternalLink, LogOut, Menu } from "lucide-react";
-import { Logo } from "@/components/shared/logo";
+import { LogoMark } from "@/components/brand/logo-mark";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { logoutAction } from "@/features/auth/actions";
@@ -28,7 +28,7 @@ export function AdminShell({ userLabel, children }: AdminShellProps) {
       <aside className="border-border bg-ink-900 sticky top-0 hidden h-dvh w-16 shrink-0 flex-col border-r md:flex lg:w-60">
         <div className="border-border flex h-16 items-center justify-center border-b px-3 lg:justify-start lg:px-5">
           <Link href="/admin" aria-label="Inicio del panel">
-            <Logo height={28} className="hidden lg:block" />
+            <LogoMark title="" className="hidden h-8 w-auto lg:block" />
             <span className="font-display text-brand-500 text-2xl font-bold lg:hidden">85</span>
           </Link>
         </div>

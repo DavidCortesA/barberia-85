@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Logo } from "@/components/shared/logo";
+import { LogoMark } from "@/components/brand/logo-mark";
 import { FacebookIcon, InstagramIcon, TikTokIcon } from "@/components/shared/social-icons";
 import { siteConfig } from "@/config/site";
+import { CookieSettingsButton } from "./cookie-banner";
 import { formatPhoneDisplay, socialUrl } from "@/lib/links";
 import type { BusinessSettings } from "@/types";
 
@@ -16,7 +17,7 @@ export function SiteFooter({ settings }: { settings: BusinessSettings }) {
     <footer className="border-border bg-ink-900 border-t">
       <div className="mx-auto grid max-w-[1200px] gap-10 px-5 py-14 md:grid-cols-3">
         <div className="space-y-4">
-          <Logo height={48} />
+          <LogoMark className="h-14 w-auto" />
           <p className="text-muted-foreground max-w-xs text-sm">{settings.name}</p>
         </div>
 
@@ -71,8 +72,21 @@ export function SiteFooter({ settings }: { settings: BusinessSettings }) {
         </div>
       </div>
 
-      <div className="border-border text-muted-foreground border-t px-5 py-5 text-center text-xs">
-        © {new Date().getFullYear()} {settings.name}. Todos los derechos reservados.
+      <div className="border-border text-muted-foreground border-t px-5 pt-5 pb-24 text-xs md:pb-5">
+        <div className="mx-auto flex max-w-[1200px] flex-col items-center justify-between gap-3 sm:flex-row">
+          <p>
+            © {new Date().getFullYear()} {settings.name}. Todos los derechos reservados.
+          </p>
+          <nav aria-label="Legal" className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+            <Link href="/privacidad" className="hover:text-foreground underline-offset-4 transition-colors hover:underline">
+              Aviso de privacidad
+            </Link>
+            <Link href="/terminos" className="hover:text-foreground underline-offset-4 transition-colors hover:underline">
+              Términos y condiciones
+            </Link>
+            <CookieSettingsButton />
+          </nav>
+        </div>
       </div>
     </footer>
   );

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { LoginForm } from "@/components/admin/login-form";
-import { Logo } from "@/components/shared/logo";
+import { LogoMark } from "@/components/brand/logo-mark";
 import { checkSession } from "@/features/auth/dal";
 import { safeAdminPath } from "@/features/auth/schemas";
 
@@ -26,7 +26,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
     <main className="grid flex-1 place-items-center px-5 py-16">
       <div className="w-full max-w-sm">
         <Link href="/" className="mx-auto mb-10 block w-fit" aria-label="Ir al sitio">
-          <Logo height={48} priority />
+          <LogoMark className="h-14 w-auto" />
         </Link>
         <div className="border-border bg-ink-900 rounded-[4px] border p-6 sm:p-8">
           <h1 className="font-display text-4xl font-bold">Panel</h1>

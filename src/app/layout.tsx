@@ -41,6 +41,9 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
   },
+  // La imagen la generan los archivos opengraph-image.tsx de cada ruta.
+  twitter: { card: "summary_large_image" },
+  appleWebApp: { title: siteConfig.name, statusBarStyle: "black-translucent" },
 };
 
 export const viewport: Viewport = {

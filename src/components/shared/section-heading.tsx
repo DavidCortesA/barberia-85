@@ -10,6 +10,8 @@ type SectionHeadingProps = {
   as?: "h1" | "h2";
   align?: "left" | "center";
   className?: string;
+  /** id del título, para `aria-labelledby` de la sección. */
+  id?: string;
 };
 
 export function SectionHeading({
@@ -19,6 +21,7 @@ export function SectionHeading({
   as: Tag = "h2",
   align = "left",
   className,
+  id,
 }: SectionHeadingProps) {
   // Un h1 está arriba del pliegue: entrada con CSS para no retrasar el LCP.
   const Reveal = Tag === "h1" ? Appear : RevealOnScroll;
@@ -30,7 +33,7 @@ export function SectionHeading({
         </Reveal>
       )}
       <Reveal delay={0.05}>
-        <Tag className="font-display mt-4 text-[clamp(2.5rem,6vw,4.25rem)] font-bold">{title}</Tag>
+        <Tag id={id} className="font-display mt-4 text-[clamp(2.75rem,7vw,5.5rem)] font-bold">{title}</Tag>
       </Reveal>
       {subtitle && (
         <Reveal delay={0.1}>

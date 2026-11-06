@@ -1,0 +1,21 @@
+{
+  "_info": "Fotos de ejemplo de Unsplash (licencia Unsplash: uso gratuito, también comercial, sin atribución obligatoria). Se suben con `npm run db:seed-media`. Reemplázalas por fotos reales desde el panel (Contenido).",
+  "content": [
+    { "file": "hero.jpg", "key": "hero.image", "altKey": "hero.image_alt", "alt": "Barbero tatuado perfilando con navaja el corte de un cliente", "source": "https://unsplash.com/photos/1Pmp9uxK8X8" },
+    { "file": "about.jpg", "key": "about.image", "altKey": "about.image_alt", "alt": "Silla de barbero de cuero negro frente a una pared de ladrillo", "source": "https://unsplash.com/photos/EW_rqoSdDes" },
+    { "file": "paso-1.jpg", "key": "process.step1_image", "source": "https://unsplash.com/photos/MNu0n-3BIKs" },
+    { "file": "paso-2.jpg", "key": "process.step2_image", "source": "https://unsplash.com/photos/AXurvQTtO3Y" },
+    { "file": "paso-3.jpg", "key": "process.step3_image", "source": "https://unsplash.com/photos/_25iXtaa6oY" },
+    { "file": "paso-4.jpg", "key": "process.step4_image", "source": "https://unsplash.com/photos/IvQeAVeJULw" }
+  ],
+  "gallery": [
+    { "file": "galeria-1.jpg", "alt": "Barbero cortando el cabello de un cliente con tijeras", "source": "https://unsplash.com/photos/tgPrIYnW3g4" },
+    { "file": "galeria-2.jpg", "alt": "Barbero con delantal de mezclilla secando el cabello de un cliente", "source": "https://unsplash.com/photos/wJoB8D3hnzc" },
+    { "file": "galeria-3.jpg", "alt": "Barbero rebajando el cabello con tijeras de entresacar y peine", "source": "https://unsplash.com/photos/DrG4V5skbMY" },
+    { "file": "galeria-4.jpg", "alt": "Recorte de barba con tijeras, en blanco y negro", "source": "https://unsplash.com/photos/fE42nRlBcG8" },
+    { "file": "galeria-5.jpg", "alt": "Barbero de camisa blanca cortando el cabello de un cliente", "source": "https://unsplash.com/photos/Q82AM6BWBPM" },
+    { "file": "galeria-6.jpg", "alt": "Silla de barbero negra y plateada", "source": "https://unsplash.com/photos/dU6eE_j2My8" },
+    { "file": "galeria-7.jpg", "alt": "Interior de barbería con lámparas colgantes encendidas", "source": "https://unsplash.com/photos/2seUdPQNy_I" },
+    { "file": "galeria-8.jpg", "alt": "Interior clásico de barbería con clientes cortándose el cabello", "source": "https://unsplash.com/photos/aM2VSVn8ktg" }
+  ]
+}

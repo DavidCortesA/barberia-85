@@ -9,8 +9,6 @@ export type BookingService = {
 /** Textos administrables del flujo (tabla site_content, claves booking.*). */
 export type BookingCopy = {
   pendingNotice: string;
-  successTitle: string;
-  successMessage: string;
 };
 
 export type SlotDto = { time: string; available: boolean };

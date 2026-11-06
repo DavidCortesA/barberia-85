@@ -10,6 +10,10 @@ const supabaseHost = (() => {
 })();
 
 const isDev = process.env.NODE_ENV !== "production";
+// Google Analytics solo amplía la CSP si se configuró un ID.
+const ga = process.env.NEXT_PUBLIC_GA_ID
+  ? { script: " https://www.googletagmanager.com", connect: " https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com", img: " https://*.google-analytics.com https://www.googletagmanager.com" }
+  : { script: "", connect: "", img: "" };
 const supabaseOrigin = supabaseHost ? `https://${supabaseHost}` : "";
 
 /**
@@ -20,11 +24,12 @@ const supabaseOrigin = supabaseHost ? `https://${supabaseHost}` : "";
  */
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}${ga.script}`,
   "style-src 'self' 'unsafe-inline'",
-  `img-src 'self' data: blob: ${supabaseOrigin}`.trim(),
-  "font-src 'self'",
-  `connect-src 'self' ${supabaseOrigin}${isDev ? " ws: wss:" : ""}`.trim(),
+  `img-src 'self' data: blob: ${supabaseOrigin}${ga.img}`.trim(),
+  // data: = fuente de íconos de FullCalendar (flechas del calendario del panel).
+  "font-src 'self' data:",
+  `connect-src 'self' ${supabaseOrigin}${ga.connect}${isDev ? " ws: wss:" : ""}`.trim(),
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "form-action 'self'",

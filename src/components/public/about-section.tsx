@@ -15,7 +15,7 @@ export function AboutSection({ content }: { content: SiteContent }) {
           {image ? (
             <Image
               src={image}
-              alt=""
+              alt={content["about.image_alt"]}
               fill
               sizes="(min-width: 1024px) 560px, 100vw"
               className="object-cover"

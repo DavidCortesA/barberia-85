@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { es } from "react-day-picker/locale";
@@ -19,7 +19,6 @@ import { detailsSchema, type DetailsInput } from "@/features/appointments/schema
 import { isDateOpen, type ScheduleWindow } from "@/features/schedule/window";
 import { formatDuration, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import { BookingSuccess } from "./booking-success";
 import { BookingSummary } from "./booking-summary";
 import { SlotPicker } from "./slot-picker";
 import type { BookingCopy, BookingService } from "./types";
@@ -30,11 +29,11 @@ type Step = 1 | 2 | 3 | 4 | 5;
 type BookingWizardProps = {
   services: BookingService[];
   window: ScheduleWindow;
-  whatsapp: string | null;
   copy: BookingCopy;
 };
 
-export function BookingWizard({ services, window: schedule, whatsapp, copy }: BookingWizardProps) {
+export function BookingWizard({ services, window: schedule, copy }: BookingWizardProps) {
+  const router = useRouter();
   const reduceMotion = useReducedMotion();
   const searchParams = useSearchParams();
   const preselected = useMemo(() => {
@@ -48,7 +47,6 @@ export function BookingWizard({ services, window: schedule, whatsapp, copy }: Bo
   const [time, setTime] = useState<string | null>(null);
   const [website, setWebsite] = useState(""); // honeypot
   const [slotRefresh, setSlotRefresh] = useState(0);
-  const [done, setDone] = useState<{ fullName: string } | null>(null);
   const [pending, startTransition] = useTransition();
 
   const form = useForm<DetailsInput>({
@@ -59,17 +57,16 @@ export function BookingWizard({ services, window: schedule, whatsapp, copy }: Bo
 
   const service = services.find((s) => s.id === serviceId) ?? null;
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const lastAnnounced = useRef<string>(`${step}|${done ? "done" : ""}`);
+  const lastAnnounced = useRef<Step>(step);
 
   // Al cambiar de paso, el foco pasa al título para que lectores de pantalla lo anuncien.
   // Se compara con el último paso anunciado para no mover el foco en la carga inicial.
   useEffect(() => {
-    const current = `${step}|${done ? "done" : ""}`;
-    if (lastAnnounced.current === current) return;
-    lastAnnounced.current = current;
+    if (lastAnnounced.current === step) return;
+    lastAnnounced.current = step;
     headingRef.current?.focus({ preventScroll: true });
     headingRef.current?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
-  }, [step, done, reduceMotion]);
+  }, [step, reduceMotion]);
 
   function chooseService(id: string) {
     if (id !== serviceId) setTime(null); // la duración cambia los horarios posibles
@@ -81,16 +78,6 @@ export function BookingWizard({ services, window: schedule, whatsapp, copy }: Bo
     const ymd = localDateToYmd(d);
     if (ymd !== date) setTime(null);
     setDate(ymd);
-  }
-
-  function reset() {
-    setStep(1);
-    setServiceId(null);
-    setDate(null);
-    setTime(null);
-    setWebsite("");
-    setDone(null);
-    form.reset();
   }
 
   async function goFromDetails() {
@@ -114,7 +101,8 @@ export function BookingWizard({ services, window: schedule, whatsapp, copy }: Bo
       });
 
       if (result.ok) {
-        setDone({ fullName: values.fullName.trim() });
+        // Página de gracias: solo datos de la cita, nunca nombre ni teléfono en la URL.
+        router.push(`/gracias?${new URLSearchParams({ servicio: service.id, fecha: date, hora: time })}`);
         return;
       }
 
@@ -130,21 +118,6 @@ export function BookingWizard({ services, window: schedule, whatsapp, copy }: Bo
         setStep(3);
       }
     });
-  }
-
-  // ----- Éxito -----
-  if (done && service && date && time) {
-    return (
-      <BookingSuccess
-        copy={copy}
-        service={service}
-        date={date}
-        time={time}
-        fullName={done.fullName}
-        whatsapp={whatsapp}
-        onReset={reset}
-      />
-    );
   }
 
   const canContinue =

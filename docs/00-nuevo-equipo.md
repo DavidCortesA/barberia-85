@@ -62,6 +62,7 @@ npm run build
 npm run test:db      # 37 + 108 pruebas contra la base REAL (reglas, permisos, flujos del panel; crea y borra datos y usuarios de prueba)
 npm run test:pages   # humo HTTP del panel con sesión (requiere npm run dev en otra terminal)
 npm run admin:create # crea o promueve el usuario administrador (pide correo y contraseña)
+npm run db:seed-media # sube las fotos de ejemplo y las asigna donde no haya foto
 npm run db:status    # ¿faltan migraciones por aplicar? (simulación)
 npm run db:push      # aplica migraciones nuevas de supabase/migrations
 npm run db:seed      # migraciones + supabase/seed.sql (datos de ejemplo)
@@ -116,3 +117,4 @@ La memoria de Claude Code **no viaja** entre equipos: todo el contexto está en 
 | [`04-sitio-publico.md`](04-sitio-publico.md) | Rutas públicas, reserva, contenido administrable |
 | [`05-fases-restantes.md`](05-fases-restantes.md) | Plan detallado de las Fases 5 y 6 y datos pendientes del cliente |
 | [`06-panel-admin.md`](06-panel-admin.md) | Panel administrativo: primer acceso, rutas, seguridad, imágenes, pruebas |
+| [`07-sitio-rediseno.md`](07-sitio-rediseno.md) | Rediseño del sitio público, marca, páginas legales, cookies y analítica |

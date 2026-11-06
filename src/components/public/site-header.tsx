@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
-import { Logo } from "@/components/shared/logo";
+import { LogoMark } from "@/components/brand/logo-mark";
 import { buttonVariants } from "@/components/ui/button";
 import {
   Sheet,
@@ -47,8 +47,8 @@ export function SiteHeader({ nav, ctaLabel }: { nav: readonly NavItem[]; ctaLabe
           scrolled ? "h-16" : "h-20",
         )}
       >
-        <Link href="/" aria-label="85 BARBERÍA, ir al inicio" className="shrink-0">
-          <Logo height={scrolled ? 34 : 44} priority className="transition-all duration-300" />
+        <Link href="/" aria-label="85 BARBERÍA, ir al inicio" className="logo-hover shrink-0">
+          <LogoMark title="" className={cn("w-auto transition-[height] duration-300", scrolled ? "h-9" : "h-12")} />
         </Link>
 
         <nav aria-label="Principal" className="hidden items-center gap-8 md:flex">

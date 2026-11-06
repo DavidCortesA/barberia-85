@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ServicesGrid } from "@/components/public/services-grid";
+import { ServicesShowcase } from "@/components/public/services-showcase";
 import { ServicesSkeleton } from "@/components/public/services-skeleton";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { getSiteContent } from "@/features/content/queries";
@@ -18,7 +18,7 @@ export default async function ServicesPage() {
   const content = await getSiteContent();
 
   return (
-    <div className="mx-auto max-w-[1200px] px-5 pt-36 pb-24">
+    <div className="mx-auto max-w-[1280px] px-5 pt-36 pb-24 lg:px-8">
       <SectionHeading
         as="h1"
         eyebrow={content["services.eyebrow"]}
@@ -27,7 +27,7 @@ export default async function ServicesPage() {
       />
       <div className="mt-12">
         <Suspense fallback={<ServicesSkeleton />}>
-          <ServicesGrid headingLevel={2} />
+          <ServicesShowcase headingLevel={2} />
         </Suspense>
       </div>
     </div>

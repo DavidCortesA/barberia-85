@@ -10,6 +10,8 @@ const publicSchema = z.object({
   NEXT_PUBLIC_SITE_URL: z.url().default("http://localhost:3000"),
   NEXT_PUBLIC_SUPABASE_URL: z.url(),
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: z.string().min(1),
+  /** Opcional: ID de medición de Google Analytics 4 (G-XXXXXXX). */
+  NEXT_PUBLIC_GA_ID: z.string().regex(/^G-[A-Z0-9]+$/, "Formato G-XXXXXXX").optional(),
 });
 
 const parsed = publicSchema.safeParse({
@@ -17,6 +19,7 @@ const parsed = publicSchema.safeParse({
   NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY:
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+  NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID || undefined,
 });
 
 if (!parsed.success) {

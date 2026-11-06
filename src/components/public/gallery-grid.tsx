@@ -23,7 +23,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
 
   return (
     <>
-      <ul className="grid auto-rows-[160px] grid-cols-2 gap-3 sm:auto-rows-[200px] sm:grid-cols-4">
+      <ul className="grid grid-flow-row-dense auto-rows-[160px] grid-cols-2 gap-3 sm:auto-rows-[200px] sm:grid-cols-4">
         {items.map((item, i) => (
           <li key={item.id} className={cn("relative overflow-hidden", spans[i % spans.length])}>
             <button
@@ -37,7 +37,7 @@ export function GalleryGrid({ items }: { items: GalleryItem[] }) {
                 alt={item.alt}
                 fill
                 sizes="(min-width: 640px) 25vw, 50vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-cover grayscale transition-[filter,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105 group-hover:grayscale-0 group-focus-visible:grayscale-0"
               />
               <span className="bg-ink-950/0 group-hover:bg-ink-950/25 absolute inset-0 transition-colors" />
             </button>

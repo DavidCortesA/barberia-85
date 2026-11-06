@@ -7,7 +7,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getSiteContent } from "@/features/content/queries";
 import { getScheduleWindow } from "@/features/schedule/queries";
 import { getActiveServices } from "@/features/services/queries";
-import { getBusinessSettings } from "@/features/settings/queries";
 
 export async function generateMetadata(): Promise<Metadata> {
   const content = await getSiteContent();
@@ -30,11 +29,7 @@ async function loadBookingData() {
 }
 
 export default async function BookingPage() {
-  const [content, settings, data] = await Promise.all([
-    getSiteContent(),
-    getBusinessSettings(),
-    loadBookingData(),
-  ]);
+  const [content, data] = await Promise.all([getSiteContent(), loadBookingData()]);
 
   return (
     <div className="mx-auto max-w-[1100px] px-5 pt-36 pb-24">
@@ -61,11 +56,8 @@ export default async function BookingPage() {
                 durationMinutes: s.duration_minutes,
               }))}
               window={data.window}
-              whatsapp={settings.whatsapp}
               copy={{
                 pendingNotice: content["booking.pending_notice"],
-                successTitle: content["booking.success_title"],
-                successMessage: content["booking.success_message"],
               }}
             />
           </Suspense>
