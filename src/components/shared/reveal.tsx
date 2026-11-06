@@ -14,7 +14,9 @@ type RevealProps = {
 
 /**
  * Revelado discreto al entrar en pantalla (opacidad + leve desplazamiento).
- * Respeta `prefers-reduced-motion`: en ese caso no anima.
+ * Respeta `prefers-reduced-motion`: en ese caso aparece sin animación.
+ * El estado inicial es siempre el mismo (el servidor no conoce esa preferencia);
+ * cambiarlo según `reduce` provocaba un error de hidratación.
  */
 export function Reveal({ children, delay = 0, y = 16, className }: RevealProps) {
   const reduce = useReducedMotion();
@@ -22,10 +24,10 @@ export function Reveal({ children, delay = 0, y = 16, className }: RevealProps) 
   return (
     <motion.div
       className={className}
-      initial={reduce ? false : { opacity: 0, y }}
+      initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={reduce ? { duration: 0 } : { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>

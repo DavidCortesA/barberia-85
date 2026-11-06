@@ -1,6 +1,7 @@
 import { CalendarDays, Clock, Scissors } from "lucide-react";
 import { formatDateLong } from "@/features/appointments/format";
 import { formatDuration, formatPrice, formatTime12 } from "@/lib/format";
+import { cn } from "@/lib/utils";
 import type { BookingService } from "./types";
 
 type BookingSummaryProps = {
@@ -26,14 +27,15 @@ export function BookingSummary({ service, date, time }: BookingSummaryProps) {
       <p className="label-brand mb-5">Tu cita</p>
       <dl className="space-y-4">
         {rows.map((row) => (
-          <div key={row.label} className="flex gap-3">
-            <span className="text-muted-foreground mt-0.5 [&_svg]:size-4">{row.icon}</span>
-            <div>
-              <dt className="text-muted-foreground text-xs">{row.label}</dt>
-              <dd className={row.value ? "text-foreground text-sm font-medium" : "text-muted-foreground text-sm"}>
-                {row.value ?? "Por elegir"}
-              </dd>
-            </div>
+          // <dl> solo admite <div> con <dt>/<dd> directos: el icono va dentro del <dt>.
+          <div key={row.label}>
+            <dt className="text-muted-foreground relative pl-7 text-xs">
+              <span className="absolute top-0.5 left-0 [&_svg]:size-4">{row.icon}</span>
+              {row.label}
+            </dt>
+            <dd className={cn("pl-7", row.value ? "text-foreground text-sm font-medium" : "text-muted-foreground text-sm")}>
+              {row.value ?? "Por elegir"}
+            </dd>
           </div>
         ))}
       </dl>

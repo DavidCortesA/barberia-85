@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { BrandMark } from "@/components/shared/brand-mark";
-import { Reveal } from "@/components/shared/reveal";
+import { Appear } from "@/components/shared/appear";
 import { buttonVariants } from "@/components/ui/button";
 import type { SiteContent } from "@/features/content/registry";
 import { cn } from "@/lib/utils";
@@ -13,24 +13,24 @@ export function Hero({ content }: { content: SiteContent }) {
     <section className="relative isolate overflow-hidden">
       <div className="mx-auto grid min-h-[100svh] max-w-[1200px] items-center gap-12 px-5 pt-32 pb-20 lg:grid-cols-[1.15fr_1fr] lg:gap-16">
         <div>
-          <Reveal>
+          <Appear>
             <p className="label-brand">{content["hero.eyebrow"]}</p>
-          </Reveal>
-          <Reveal delay={0.08}>
+          </Appear>
+          <Appear delay={0.08}>
             <h1 className="font-display mt-5 text-[clamp(3.5rem,10vw,8rem)] font-bold">
               {content["hero.title_main"]}{" "}
               <span className="text-primary">{content["hero.title_accent"]}</span>
             </h1>
-          </Reveal>
-          <Reveal delay={0.16}>
+          </Appear>
+          <Appear delay={0.16}>
             <p className="font-serif text-brand-300 mt-6 text-2xl italic sm:text-3xl">{content["hero.tagline"]}</p>
-          </Reveal>
-          <Reveal delay={0.22}>
+          </Appear>
+          <Appear delay={0.22}>
             <p className="text-muted-foreground mt-5 max-w-[46ch] text-base text-pretty sm:text-lg">
               {content["hero.description"]}
             </p>
-          </Reveal>
-          <Reveal delay={0.3}>
+          </Appear>
+          <Appear delay={0.3}>
             <div className="mt-9 flex flex-wrap gap-3">
               <Link href="/reservar" className={cn(buttonVariants({ size: "lg" }))}>
                 {content["hero.cta_primary"]}
@@ -39,10 +39,10 @@ export function Hero({ content }: { content: SiteContent }) {
                 {content["hero.cta_secondary"]}
               </Link>
             </div>
-          </Reveal>
+          </Appear>
         </div>
 
-        <Reveal delay={0.2} y={24} className="relative mx-auto w-full max-w-md lg:max-w-none">
+        <Appear delay={0.2} className="relative mx-auto w-full max-w-md lg:max-w-none">
           {/* Marco ámbar desplazado: detalle editorial */}
           <div
             aria-hidden="true"
@@ -62,7 +62,7 @@ export function Hero({ content }: { content: SiteContent }) {
               <BrandMark />
             )}
           </div>
-        </Reveal>
+        </Appear>
       </div>
     </section>
   );

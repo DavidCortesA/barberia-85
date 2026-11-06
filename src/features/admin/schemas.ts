@@ -1,3 +1,4 @@
+import "@/lib/zod-config";
 import { z } from "zod";
 
 /** Esquemas comunes de las acciones del panel. */

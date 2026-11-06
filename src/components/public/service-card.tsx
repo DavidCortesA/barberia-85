@@ -6,7 +6,8 @@ import { formatDuration, formatPrice } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { Service } from "@/types";
 
-export function ServiceCard({ service }: { service: Service }) {
+export function ServiceCard({ service, headingLevel = 3 }: { service: Service; headingLevel?: 2 | 3 }) {
+  const Heading = headingLevel === 2 ? "h2" : "h3";
   return (
     <article className="group border-border bg-ink-900 hover:border-primary/60 relative flex h-full flex-col overflow-hidden rounded-[4px] border transition-[border-color,transform] duration-300 hover:-translate-y-1">
       {service.image_url ? (
@@ -24,7 +25,7 @@ export function ServiceCard({ service }: { service: Service }) {
       )}
 
       <div className="flex flex-1 flex-col p-6">
-        <h3 className="font-display text-3xl font-bold">{service.name}</h3>
+        <Heading className="font-display text-3xl font-bold">{service.name}</Heading>
         {service.description && (
           <p className="text-muted-foreground mt-3 flex-1 text-sm text-pretty">{service.description}</p>
         )}

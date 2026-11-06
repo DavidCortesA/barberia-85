@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
-import { Reveal } from "./reveal";
+import { Appear } from "./appear";
+import { Reveal as RevealOnScroll } from "./reveal";
 
 type SectionHeadingProps = {
   eyebrow?: string;
@@ -19,6 +20,8 @@ export function SectionHeading({
   align = "left",
   className,
 }: SectionHeadingProps) {
+  // Un h1 está arriba del pliegue: entrada con CSS para no retrasar el LCP.
+  const Reveal = Tag === "h1" ? Appear : RevealOnScroll;
   return (
     <div className={cn("max-w-2xl", align === "center" && "mx-auto text-center", className)}>
       {eyebrow && (

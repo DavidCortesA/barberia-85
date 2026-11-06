@@ -1,3 +1,4 @@
+import "@/lib/zod-config";
 import { z } from "zod";
 
 /** Servicio editable desde el panel (lo comparten el formulario y la Server Action). */

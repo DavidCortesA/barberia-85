@@ -1,3 +1,4 @@
+import "@/lib/zod-config";
 import { z } from "zod";
 import { mediaPathFromUrl } from "@/features/media/constants";
 import { contentFields, contentSections, type ContentField } from "./registry";

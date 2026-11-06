@@ -9,11 +9,12 @@ import { summarizeWeeklyHours } from "@/features/schedule/format";
 import { formatPhoneDisplay, mapsUrl, socialUrl } from "@/lib/links";
 import type { BusinessHour, BusinessSettings } from "@/types";
 
-function InfoCard({ icon, title, children }: { icon: ReactNode; title: string; children: ReactNode }) {
+/** `as`: un nivel por debajo del título de la sección (h3 bajo h2, h2 bajo h1). */
+function InfoCard({ icon, title, children, as: Heading = "h3" }: { icon: ReactNode; title: string; children: ReactNode; as?: "h2" | "h3" }) {
   return (
     <div className="border-border bg-ink-900 h-full rounded-[4px] border p-6">
       <div className="text-primary mb-4 [&_svg]:size-6">{icon}</div>
-      <h3 className="font-display mb-3 text-2xl font-bold">{title}</h3>
+      <Heading className="font-display mb-3 text-2xl font-bold">{title}</Heading>
       <div className="text-muted-foreground space-y-2 text-sm">{children}</div>
     </div>
   );
@@ -28,6 +29,7 @@ type ContactBlockProps = {
 };
 
 export function ContactBlock({ content, settings, hours, headingAs = "h2" }: ContactBlockProps) {
+  const cardHeading = headingAs === "h1" ? "h2" : "h3";
   const maps = mapsUrl(settings);
   const lines = summarizeWeeklyHours(hours);
   const socials = [
@@ -47,7 +49,7 @@ export function ContactBlock({ content, settings, hours, headingAs = "h2" }: Con
 
       <div className="mt-12 grid gap-5 md:grid-cols-3">
         <Reveal className="h-full">
-          <InfoCard icon={<MapPin aria-hidden />} title="Ubicación">
+          <InfoCard icon={<MapPin aria-hidden />} title="Ubicación" as={cardHeading}>
             {settings.address ? (
               <>
                 <p className="text-foreground">
@@ -72,7 +74,7 @@ export function ContactBlock({ content, settings, hours, headingAs = "h2" }: Con
         </Reveal>
 
         <Reveal delay={0.08} className="h-full">
-          <InfoCard icon={<Clock aria-hidden />} title="Horarios">
+          <InfoCard icon={<Clock aria-hidden />} title="Horarios" as={cardHeading}>
             {hours.length > 0 ? (
               <dl className="space-y-1.5">
                 {lines.map((line) => (
@@ -89,7 +91,7 @@ export function ContactBlock({ content, settings, hours, headingAs = "h2" }: Con
         </Reveal>
 
         <Reveal delay={0.16} className="h-full">
-          <InfoCard icon={<Phone aria-hidden />} title="Escríbenos">
+          <InfoCard icon={<Phone aria-hidden />} title="Escríbenos" as={cardHeading}>
             {settings.phone && (
               <p>
                 <a

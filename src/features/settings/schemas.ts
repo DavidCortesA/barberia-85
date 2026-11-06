@@ -1,3 +1,4 @@
+import "@/lib/zod-config";
 import { z } from "zod";
 import { normalizeMxPhone } from "@/lib/whatsapp";
 

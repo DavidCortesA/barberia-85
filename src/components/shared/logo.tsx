@@ -18,7 +18,7 @@ export function Logo({ height = 40, className, priority = false }: LogoProps) {
       height={height}
       priority={priority}
       className={cn("h-auto w-auto select-none", className)}
-      style={{ height }}
+      style={{ height, width: "auto" }}
     />
   );
 }

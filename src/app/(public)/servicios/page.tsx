@@ -27,7 +27,7 @@ export default async function ServicesPage() {
       />
       <div className="mt-12">
         <Suspense fallback={<ServicesSkeleton />}>
-          <ServicesGrid />
+          <ServicesGrid headingLevel={2} />
         </Suspense>
       </div>
     </div>

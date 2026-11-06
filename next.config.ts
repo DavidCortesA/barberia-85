@@ -9,7 +9,43 @@ const supabaseHost = (() => {
   }
 })();
 
+const isDev = process.env.NODE_ENV !== "production";
+const supabaseOrigin = supabaseHost ? `https://${supabaseHost}` : "";
+
+/**
+ * CSP razonable sin nonces (los nonces obligarían a renderizar todo de forma
+ * dinámica y se perdería el ISR del sitio público). Next necesita scripts y
+ * estilos en línea para hidratar; todo lo demás queda limitado al propio sitio
+ * y a Supabase (subida de fotos desde el navegador del admin).
+ */
+const csp = [
+  "default-src 'self'",
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""}`,
+  "style-src 'self' 'unsafe-inline'",
+  `img-src 'self' data: blob: ${supabaseOrigin}`.trim(),
+  "font-src 'self'",
+  `connect-src 'self' ${supabaseOrigin}${isDev ? " ws: wss:" : ""}`.trim(),
+  "frame-ancestors 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "object-src 'none'",
+  ...(isDev ? [] : ["upgrade-insecure-requests"]),
+].join("; ");
+
+const securityHeaders = [
+  { key: "Content-Security-Policy", value: csp },
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
+  ...(isDev ? [] : [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }]),
+];
+
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  async headers() {
+    return [{ source: "/:path*", headers: securityHeaders }];
+  },
   // En desarrollo Next registra cada Server Action con sus argumentos: eso
   // imprimiría contraseñas (login) y datos de clientes en la terminal.
   logging: { serverFunctions: false },
