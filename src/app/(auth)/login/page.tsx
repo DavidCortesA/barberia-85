@@ -15,11 +15,11 @@ export default async function LoginPage(props: PageProps<"/login">) {
   const searchParams = await props.searchParams;
   const next = safeAdminPath(searchParams.next);
   const check = await checkSession();
-  if (check.status === "admin") redirect(next);
+  if (check.status === "ok") redirect(next);
 
   const notice =
     searchParams.error === "sin-acceso" || check.status === "forbidden"
-      ? "Esta cuenta no tiene acceso al panel. Inicia sesión con una cuenta de administrador."
+      ? "Esta cuenta no tiene acceso al panel. Inicia sesión con una cuenta del equipo."
       : null;
 
   return (
@@ -30,7 +30,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
         </Link>
         <div className="border-border bg-ink-900 rounded-[4px] border p-6 sm:p-8">
           <h1 className="font-display text-4xl font-bold">Panel</h1>
-          <p className="text-muted-foreground mt-2 text-sm">Acceso solo para la administración de la barbería.</p>
+          <p className="text-muted-foreground mt-2 text-sm">Acceso para el equipo de la barbería.</p>
           {notice && (
             <p role="alert" className="border-st-rejected/40 bg-st-rejected/10 text-foreground mt-5 rounded-[3px] border p-3 text-sm">
               {notice}

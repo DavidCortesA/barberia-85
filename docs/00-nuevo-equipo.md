@@ -54,12 +54,12 @@ Reglas de oro: las claves **no** se pegan en chats, issues ni commits; si alguna
 
 ```bash
 npm run dev          # servidor local en http://localhost:3000
-npm test             # 83 pruebas unitarias (Vitest, no tocan la base)
+npm test             # 85 pruebas unitarias (Vitest, no tocan la base)
 npm run typecheck    # next typegen + tsc
 npm run lint
 npm run build
 
-npm run test:db      # 37 + 108 pruebas contra la base REAL (reglas, permisos, flujos del panel; crea y borra datos y usuarios de prueba)
+npm run test:db      # 37 + 114 pruebas contra la base REAL (reglas, permisos, flujos del panel; crea y borra datos y usuarios de prueba)
 npm run test:pages   # humo HTTP del panel con sesión (requiere npm run dev en otra terminal)
 npm run admin:create # crea o promueve el usuario administrador (pide correo y contraseña)
 npm run db:seed-media # sube las fotos de ejemplo y las asigna donde no haya foto
@@ -69,7 +69,7 @@ npm run db:seed      # migraciones + supabase/seed.sql (datos de ejemplo)
 npm run db:types     # regenera src/types/database.ts tras cambiar el esquema
 ```
 
-La base remota **ya tiene** las 7 migraciones aplicadas y los datos de ejemplo; en un equipo nuevo no hay que volver a correrlas. Para comprobarlo: `npm run db:status` debe decir *Remote database is up to date*.
+La base remota **ya tiene** las 8 migraciones aplicadas y los datos de ejemplo; en un equipo nuevo no hay que volver a correrlas. Para comprobarlo: `npm run db:status` debe decir *Remote database is up to date*.
 
 Antes de dar algo por terminado: `npm run typecheck && npm run lint && npm test && npm run build`.
 

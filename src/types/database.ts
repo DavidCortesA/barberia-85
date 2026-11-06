@@ -268,6 +268,9 @@ isOneToOne: false
               "ends_at": string,"starts_at": string
             }[]
                            },
+"has_panel_access":
+{ Args: Record<PropertyKey, never>; Returns: boolean
+                           },
 "is_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },

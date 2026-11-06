@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { PageHeader } from "@/components/admin/page-header";
+import { PageHeader, Panel } from "@/components/admin/page-header";
 import { BlockedSlotsEditor } from "@/components/admin/schedule/blocked-slots-editor";
 import { ExceptionsEditor } from "@/components/admin/schedule/exceptions-editor";
 import { WeeklyHoursEditor } from "@/components/admin/schedule/weekly-hours-editor";
-import { requireAdmin } from "@/features/auth/dal";
+import { requirePanel } from "@/features/auth/dal";
+import { summarizeWeeklyHours } from "@/features/schedule/format";
 import { shopDateKey } from "@/lib/date";
 
 export const metadata: Metadata = { title: "Horarios" };
 
 export default async function ScheduleAdminPage() {
-  const { supabase } = await requireAdmin();
+  const { supabase, role } = await requirePanel();
+  const isAdmin = role === "admin";
   const today = shopDateKey(new Date());
 
   const [hoursRes, excRes, blocksRes, barbersRes] = await Promise.all([
@@ -28,12 +30,29 @@ export default async function ScheduleAdminPage() {
     <>
       <PageHeader
         title="Horarios"
-        description="Horario semanal, días especiales y bloqueos de agenda. Las reglas de reserva (intervalo, aviso mínimo…) están en Configuración."
+        description={
+          isAdmin
+            ? "Horario semanal, días especiales y bloqueos de agenda. Las reglas de reserva (intervalo, aviso mínimo…) están en Configuración."
+            : "Consulta el horario de atención y aparta rangos de la agenda con bloqueos."
+        }
       />
       <div className="space-y-6">
-        <WeeklyHoursEditor rows={hoursRes.data ?? []} />
+        {isAdmin ? (
+          <WeeklyHoursEditor rows={hoursRes.data ?? []} />
+        ) : (
+          <Panel title="Horario de atención" description="Solo la administración puede cambiarlo.">
+            <dl className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-[auto_1fr]">
+              {summarizeWeeklyHours(hoursRes.data ?? []).map((line) => (
+                <div key={line.label} className="contents">
+                  <dt className="text-muted-foreground">{line.label}</dt>
+                  <dd>{line.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </Panel>
+        )}
         <div className="grid gap-6 xl:grid-cols-2">
-          <ExceptionsEditor exceptions={excRes.data ?? []} today={today} />
+          {isAdmin && <ExceptionsEditor exceptions={excRes.data ?? []} today={today} />}
           <BlockedSlotsEditor
             today={today}
             barbers={barbersRes.data ?? []}

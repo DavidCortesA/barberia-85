@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { dbErrorMessage, failure, validationFailure, type ActionResult } from "@/features/admin/result";
-import { requireAdmin } from "@/features/auth/dal";
+import { requirePanel } from "@/features/auth/dal";
 import { shopDateKey, shopTimeKey } from "@/lib/date";
 import { formatTime12 } from "@/lib/format";
 import { buildWhatsAppLink, confirmationMessage } from "@/lib/whatsapp";
@@ -27,7 +27,7 @@ const statusErrors = {
 
 /** Confirmar, rechazar, cancelar o completar una cita. La BD valida la transición. */
 export async function changeAppointmentStatusAction(input: unknown): Promise<ActionResult<StatusChangeData>> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requirePanel();
   const parsed = statusSchema.safeParse(input);
   if (!parsed.success) return validationFailure(parsed.error);
   const { id, to } = parsed.data;
@@ -85,7 +85,7 @@ const rejectManySchema = z.object({ ids: z.array(z.uuid()).min(1).max(50) });
 
 /** Rechaza varias solicitudes pendientes (las que se traslapan con una recién confirmada). */
 export async function rejectAppointmentsAction(input: unknown): Promise<ActionResult> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requirePanel();
   const parsed = rejectManySchema.safeParse(input);
   if (!parsed.success) return validationFailure(parsed.error);
 
@@ -108,7 +108,7 @@ const notesSchema = z.object({
 });
 
 export async function saveAdminNotesAction(input: unknown): Promise<ActionResult> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requirePanel();
   const parsed = notesSchema.safeParse(input);
   if (!parsed.success) return validationFailure(parsed.error);
 

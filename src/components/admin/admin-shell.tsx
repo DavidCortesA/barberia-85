@@ -9,18 +9,20 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { logoutAction } from "@/features/auth/actions";
 import { cn } from "@/lib/utils";
-import { adminNav, isActive } from "./nav";
+import type { Enums } from "@/types";
+import { isActive, navFor } from "./nav";
 
-type AdminShellProps = { userLabel: string; children: ReactNode };
+type AdminShellProps = { userLabel: string; role: Enums<"user_role">; children: ReactNode };
 
 /**
  * Estructura del panel: barra lateral de 240 px en escritorio, solo iconos en
  * tablet y barra inferior + menú "Más" en móvil (docs/02-diseno.md §4).
  */
-export function AdminShell({ userLabel, children }: AdminShellProps) {
+export function AdminShell({ userLabel, role, children }: AdminShellProps) {
+  const nav = navFor(role);
   const pathname = usePathname();
   const [moreOpen, setMoreOpen] = useState(false);
-  const current = adminNav.find((item) => isActive(pathname, item.href));
+  const current = nav.find((item) => isActive(pathname, item.href));
 
   return (
     <div className="flex min-h-dvh">
@@ -34,7 +36,7 @@ export function AdminShell({ userLabel, children }: AdminShellProps) {
         </div>
         <nav aria-label="Panel" className="flex-1 overflow-y-auto p-2 lg:p-3">
           <ul className="space-y-1">
-            {adminNav.map((item) => {
+            {nav.map((item) => {
               const active = isActive(pathname, item.href);
               return (
                 <li key={item.href}>
@@ -92,7 +94,10 @@ export function AdminShell({ userLabel, children }: AdminShellProps) {
             <span className="text-foreground font-medium">{current?.label ?? "Panel"}</span>
           </p>
           <div className="ml-auto flex items-center gap-2">
-            <span className="text-muted-foreground hidden max-w-56 truncate text-xs sm:inline">{userLabel}</span>
+            <span className="text-muted-foreground hidden max-w-56 truncate text-xs sm:inline">
+              {userLabel}
+              {role === "staff" && <span className="border-border ml-2 rounded-full border px-2 py-0.5">Recepción</span>}
+            </span>
             <a
               href="/"
               target="_blank"
@@ -115,7 +120,7 @@ export function AdminShell({ userLabel, children }: AdminShellProps) {
         className="border-border bg-ink-900/95 fixed inset-x-0 bottom-0 z-40 border-t pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
       >
         <ul className="grid grid-cols-4">
-          {adminNav
+          {nav
             .filter((item) => item.mobile)
             .map((item) => {
               const active = isActive(pathname, item.href);
@@ -158,7 +163,7 @@ export function AdminShell({ userLabel, children }: AdminShellProps) {
             <SheetTitle>Más opciones</SheetTitle>
           </SheetHeader>
           <ul className="grid grid-cols-2 gap-2 px-4">
-            {adminNav
+            {nav
               .filter((item) => !item.mobile)
               .map((item) => (
                 <li key={item.href}>

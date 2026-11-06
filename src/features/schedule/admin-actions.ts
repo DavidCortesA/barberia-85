@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { dbErrorMessage, failure, validationFailure, type ActionResult } from "@/features/admin/result";
 import { idSchema } from "@/features/admin/schemas";
-import { requireAdmin } from "@/features/auth/dal";
+import { requireAdmin, requirePanel } from "@/features/auth/dal";
 import { shopDateKey, shopLocalToUtc } from "@/lib/date";
 import { blockSchema, exceptionSchema, weeklySchema, weeklyToRows } from "./admin-schemas";
 
@@ -58,7 +58,7 @@ export async function deleteExceptionAction(input: unknown): Promise<ActionResul
 export type BlockResult = { confirmedOverlaps: number };
 
 export async function createBlockAction(input: unknown): Promise<ActionResult<BlockResult>> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requirePanel();
   const parsed = blockSchema.safeParse(input);
   if (!parsed.success) return validationFailure(parsed.error);
   const v = parsed.data;
@@ -97,7 +97,7 @@ export async function createBlockAction(input: unknown): Promise<ActionResult<Bl
 }
 
 export async function deleteBlockAction(input: unknown): Promise<ActionResult> {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requirePanel();
   const parsed = idSchema.safeParse(input);
   if (!parsed.success) return validationFailure(parsed.error);
   const { error } = await supabase.from("blocked_slots").delete().eq("id", parsed.data.id).select("id").single();

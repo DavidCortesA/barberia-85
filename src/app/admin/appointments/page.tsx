@@ -3,12 +3,12 @@ import { AppointmentsFilters } from "@/components/admin/appointments/appointment
 import { AppointmentsTable } from "@/components/admin/appointments/appointments-table";
 import { PageHeader } from "@/components/admin/page-header";
 import { listAppointments, PAGE_SIZE, parseAppointmentFilters } from "@/features/appointments/admin-queries";
-import { requireAdmin } from "@/features/auth/dal";
+import { requirePanel } from "@/features/auth/dal";
 
 export const metadata: Metadata = { title: "Citas" };
 
 export default async function AppointmentsPage(props: PageProps<"/admin/appointments">) {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requirePanel();
   const filters = parseAppointmentFilters(await props.searchParams);
   const { rows, total } = await listAppointments(supabase, filters);
 

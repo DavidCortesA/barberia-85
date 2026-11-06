@@ -10,7 +10,7 @@ const INVALID = "Correo o contraseña incorrectos.";
 
 /**
  * Inicia sesión. Los mensajes son genéricos: nunca revelan si el correo existe.
- * Una cuenta sin rol admin se cierra de inmediato y no entra al panel.
+ * Una cuenta sin rol de panel (admin o staff) se cierra de inmediato.
  */
 export async function loginAction(input: unknown, next?: string): Promise<LoginResult> {
   const parsed = loginSchema.safeParse(input);
@@ -24,7 +24,7 @@ export async function loginAction(input: unknown, next?: string): Promise<LoginR
   }
 
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", data.user.id).maybeSingle();
-  if (profile?.role !== "admin") {
+  if (profile?.role !== "admin" && profile?.role !== "staff") {
     await supabase.auth.signOut();
     return { ok: false, message: "Esta cuenta no tiene acceso al panel." };
   }

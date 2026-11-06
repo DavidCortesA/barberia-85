@@ -29,11 +29,25 @@ El administrador opera la barbería sin tocar código ni SQL: citas, calendario,
 | `/api/admin/calendar` | `GET ?from&to` (máx. 62 días) → citas y bloqueos del rango. Solo admin (401 si no) |
 | `/api/cron/keepalive` | Cron diario (Vercel): mantiene activo Supabase Free y marca como vencidas las pendientes pasadas |
 
+## Roles
+
+| | Recepción (`staff`) | Administración (`admin`) |
+|---|---|---|
+| Inicio, citas, calendario | ✅ ver, confirmar, rechazar, cancelar, completar, notas, WhatsApp | ✅ |
+| Horarios | Ver el horario; crear y quitar **bloqueos** | ✅ todo (semanal, días especiales, bloqueos) |
+| Servicios, barberos, contenido, configuración | — | ✅ |
+| Usuarios (`/admin/users`) | — | ✅ crear cuentas, cambiar rol, nueva contraseña, eliminar |
+
+- Las cuentas se crean en **Usuarios** (o la primera con `npm run admin:create`). La contraseña inicial la elige el admin y la comparte en persona. Nadie puede cambiar su propio rol ni eliminarse (evita quedarse sin administrador).
+- En la base (migración `…140000_staff_role.sql`): `has_panel_access()` y políticas para que recepción lea citas, clientes e historial, actualice citas y maneje bloqueos. Un trigger impide que quien no es admin cambie algo distinto de estado y notas internas (no puede mover una cita de horario ni borrarla).
+- Si recepción abre una pantalla de administración, vuelve al inicio con un aviso (`/admin?aviso=sin-permiso`).
+- Opción futura: perfil **barbero** que solo vea sus citas (requiere ligar el usuario a un barbero y activar la selección de barbero al reservar).
+
 ## Seguridad (tres barreras)
 
 1. `src/proxy.ts`: sin sesión en `/admin/*` → `/login?next=…`.
-2. `src/features/auth/dal.ts`: `requireAdmin()` verifica la sesión con `getClaims()` **y** `profiles.role = 'admin'`. Se llama en `admin/layout.tsx`, en cada página y **al inicio de cada Server Action**. Un usuario `staff` va a `/login?error=sin-acceso`.
-3. RLS en la base: aunque alguien saltara las dos anteriores, solo `is_admin()` puede leer datos privados o escribir.
+2. `src/features/auth/dal.ts`: `requireRole()` verifica la sesión con `getClaims()` **y** el rol en `profiles`. `requirePanel()` (admin o staff) protege layout, inicio, citas, calendario, horarios y sus acciones; `requireAdmin()` el resto. Se llama en cada página y **al inicio de cada Server Action**.
+3. RLS en la base: aunque alguien saltara las dos anteriores, la base solo permite a cada rol lo de la tabla de arriba.
 
 Las acciones usan el cliente **con sesión** (`createClient()` de `server.ts`), nunca la clave secreta. `next` en `/login` solo acepta rutas `/admin…` (sin redirecciones abiertas).
 
@@ -78,9 +92,9 @@ Cada barbero tiene su horario de trabajo (tabla `barber_hours`, migración `…1
 ## Pruebas
 
 ```bash
-npm test             # 83 unitarias: lógica del panel, esquemas y rechazo de acciones sin sesión/rol
-npm run test:db      # 37 reglas de reserva + 108 de matriz de permisos y flujos del panel (BD real)
-npm run test:pages   # 17 de humo HTTP de todas las pantallas (requiere npm run dev o npm start)
+npm test             # 85 unitarias: lógica del panel, esquemas y autorización de acciones por rol
+npm run test:db      # 37 reglas de reserva + 114 de matriz de permisos (anónimo/recepción/admin) y flujos (BD real)
+npm run test:pages   # 27 de humo HTTP por rol (requiere npm run dev o npm start)
 ```
 
 `test:db` y `test:pages` crean usuarios temporales (staff y admin) con contraseñas aleatorias que nunca se imprimen y los borran al terminar.

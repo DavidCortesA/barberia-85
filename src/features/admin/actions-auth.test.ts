@@ -7,7 +7,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
  * perfil queda registrada en `writes`.
  */
 
-let role: "anon" | "staff" | "admin" = "anon";
+let role: "anon" | "staff" | "admin" | "cliente" = "anon";
 const writes: string[] = [];
 
 vi.mock("server-only", () => ({}));
@@ -21,7 +21,7 @@ vi.mock("next/navigation", () => ({
 function builder(table: string) {
   const result =
     table === "profiles"
-      ? { data: role === "anon" ? null : { role, full_name: null }, error: null }
+      ? { data: role === "anon" ? null : { role: role === "cliente" ? "otro" : role, full_name: null }, error: null }
       : { data: null, error: null };
   const chain: Record<string, unknown> = {};
   const record = (op: string) => () => {
@@ -31,11 +31,20 @@ function builder(table: string) {
   for (const op of ["select", "insert", "update", "upsert", "delete", "eq", "neq", "in", "lt", "gt", "order", "limit"]) {
     chain[op] = record(op);
   }
-  chain.single = async () => result;
+  // Como en Supabase real: .single() sin fila devuelve el error PGRST116.
+  chain.single = async () => (result.data ? result : { data: null, error: { code: "PGRST116", message: "" } });
   chain.maybeSingle = async () => result;
   chain.then = (resolve: (v: unknown) => void) => resolve(result);
   return chain;
 }
+
+const authAdmin = vi.fn();
+vi.mock("@/lib/supabase/admin", () => ({
+  createAdminClient: () => {
+    authAdmin();
+    return { auth: { admin: { createUser: authAdmin, deleteUser: authAdmin, updateUserById: authAdmin } } };
+  },
+}));
 
 vi.mock("@/lib/supabase/server", () => ({
   createClient: async () => ({
@@ -66,7 +75,7 @@ vi.mock("@/lib/supabase/server", () => ({
 const UUID = "3f1c2a52-8d0e-4a4c-9b57-0a1d2c3e4f5a";
 
 async function loadActions() {
-  const [appointments, services, barbers, schedule, settings, content, media] = await Promise.all([
+  const [appointments, services, barbers, schedule, settings, content, media, users] = await Promise.all([
     import("@/features/appointments/admin-actions"),
     import("@/features/services/admin-actions"),
     import("@/features/barbers/admin-actions"),
@@ -74,46 +83,81 @@ async function loadActions() {
     import("@/features/settings/admin-actions"),
     import("@/features/content/admin-actions"),
     import("@/features/media/actions"),
+    import("@/features/users/admin-actions"),
   ]);
-  return {
+  /** Lo que también puede hacer recepción (staff). */
+  const panel = {
     changeAppointmentStatus: () => appointments.changeAppointmentStatusAction({ id: UUID, to: "confirmed" }),
     rejectAppointments: () => appointments.rejectAppointmentsAction({ ids: [UUID] }),
     saveAdminNotes: () => appointments.saveAdminNotesAction({ id: UUID, notes: "x" }),
+    createBlock: () => schedule.createBlockAction({}),
+    deleteBlock: () => schedule.deleteBlockAction({ id: "no-uuid" }),
+  };
+  /** Solo administración. */
+  const adminOnly = {
     saveService: () => services.saveServiceAction({ name: "Corte", description: "", price: 1, durationMinutes: 30, imageUrl: "", isActive: true }),
     deleteService: () => services.deleteServiceAction({ id: UUID }),
     moveService: () => services.moveServiceAction({ id: UUID, direction: "up" }),
     saveBarber: () => barbers.saveBarberAction({ name: "Juan", specialty: "", description: "", imageUrl: "", isActive: true }),
     saveWeeklyHours: () => schedule.saveWeeklyHoursAction([]),
-    createBlock: () => schedule.createBlockAction({}),
+    createException: () => schedule.createExceptionAction({}),
     saveSettings: () => settings.saveSettingsAction({}),
     saveContent: () => content.saveContentAction({ section: "hero", values: { "hero.title_main": "Hola" } }),
     deleteGalleryImage: () => content.deleteGalleryImageAction({ id: UUID }),
     createUploadTicket: () => media.createUploadTicketAction({ folder: "content", contentType: "image/png", size: 10 }),
+    createUser: () => users.createUserAction({ fullName: "Ana", email: "ana@x.test", password: "x".repeat(16), role: "staff" }),
+    changeRole: () => users.changeRoleAction({ id: UUID, role: "admin" }),
+    setPassword: () => users.setPasswordAction({ id: UUID, password: "x".repeat(16) }),
+    deleteUser: () => users.deleteUserAction({ id: UUID }),
   };
+  return { panel, adminOnly, all: { ...panel, ...adminOnly } };
 }
 
 beforeEach(() => {
   writes.length = 0;
+  authAdmin.mockClear();
 });
 
 // La primera importación de todas las acciones tarda: se da margen.
 describe("Server Actions del panel", { timeout: 60_000 }, () => {
   it("sin sesión: redirigen a /login y no tocan la base", async () => {
     role = "anon";
-    const actions = await loadActions();
-    for (const [name, run] of Object.entries(actions)) {
+    const { all } = await loadActions();
+    for (const [name, run] of Object.entries(all)) {
       await expect(run(), name).rejects.toThrow("REDIRECT /login");
+    }
+    expect(writes).toEqual([]);
+    expect(authAdmin).not.toHaveBeenCalled();
+  });
+
+  it("cuenta sin rol de panel: redirige con aviso de sin acceso", async () => {
+    role = "cliente";
+    const { all } = await loadActions();
+    for (const [name, run] of Object.entries(all)) {
+      await expect(run(), name).rejects.toThrow("REDIRECT /login?error=sin-acceso");
     }
     expect(writes).toEqual([]);
   });
 
-  it("usuario staff: redirige con aviso de sin acceso y no toca la base", async () => {
+  it("recepción (staff): las acciones de administración la regresan al inicio sin tocar nada", async () => {
     role = "staff";
-    const actions = await loadActions();
-    for (const [name, run] of Object.entries(actions)) {
-      await expect(run(), name).rejects.toThrow("REDIRECT /login?error=sin-acceso");
+    const { adminOnly } = await loadActions();
+    for (const [name, run] of Object.entries(adminOnly)) {
+      await expect(run(), name).rejects.toThrow("REDIRECT /admin?aviso=sin-permiso");
     }
     expect(writes).toEqual([]);
+    expect(authAdmin).not.toHaveBeenCalled();
+  });
+
+  it("recepción (staff): sí pasa la autorización de citas y bloqueos (y Zod valida)", async () => {
+    role = "staff";
+    const { panel } = await loadActions();
+    for (const [name, run] of Object.entries(panel)) {
+      await expect(run(), name).resolves.toBeTruthy();
+    }
+    const { createBlock, deleteBlock } = panel;
+    expect((await createBlock()).ok).toBe(false);
+    expect((await deleteBlock()).ok).toBe(false);
   });
 
   it("admin con datos inválidos: Zod los rechaza antes de escribir", async () => {

@@ -2,7 +2,7 @@
  * Matriz de permisos y flujos del panel contra la base de datos REAL (Supabase).
  *   npm run test:db   (corre después de db-smoke.cjs)
  *
- * Crea DOS usuarios temporales (rol staff y rol admin) con contraseñas aleatorias
+ * Crea DOS usuarios temporales (rol staff = recepción y rol admin) con contraseñas aleatorias
  * que nunca se imprimen, inicia sesión con cada uno usando la clave publishable
  * (igual que el navegador) y comprueba lectura/escritura sobre cada tabla y
  * función, Storage y las transiciones de citas que usa el panel. Al terminar
@@ -112,13 +112,14 @@ const SERVICE_ONLY_RPC = {
   ok("seed: solicitud de prueba creada", !seed.error, seed.error?.message);
   await svc.from("blocked_slots").insert({ start_datetime: at(tue, "09:00"), end_datetime: at(tue, "09:30"), reason: "prueba-permisos" });
 
+  // Datos privados: anon nada; staff (recepción) y admin sí.
   for (const t of PRIVATE) {
-    for (const role of ["anon", "staff"]) {
-      const r = await roles[role].client.from(t).select("*").limit(5);
-      ok(`${role} NO lee ${t}`, !!r.error || r.data.length === 0, r.error ? r.error.code : `${r.data.length} filas`);
+    const r = await anon.from(t).select("*").limit(5);
+    ok(`anon NO lee ${t}`, !!r.error || r.data.length === 0, r.error ? r.error.code : `${r.data.length} filas`);
+    for (const role of ["staff", "admin"]) {
+      const x = await roles[role].client.from(t).select("*").limit(5);
+      ok(`${role} lee ${t}`, !x.error && x.data.length > 0, x.error?.code ?? `${x.data.length} filas`);
     }
-    const r = await admin.client.from(t).select("*").limit(5);
-    ok(`admin lee ${t}`, !r.error && r.data.length > 0, r.error?.code ?? `${r.data.length} filas`);
   }
 
   // profiles: anon nada; staff solo el suyo; admin todos.
@@ -142,11 +143,14 @@ const SERVICE_ONLY_RPC = {
     gallery_images: (c) => c.from("gallery_images").insert({ image_url: "https://example.test/x.jpg", alt: "prueba-permisos", is_active: false }).select(),
     customers: (c) => c.from("customers").insert({ full_name: "Prueba Permisos", phone: PHONES[1] }).select(),
   };
+  // Recepción solo puede crear bloqueos de agenda.
+  const STAFF_CAN_INSERT = new Set(["blocked_slots"]);
   for (const [t, write] of Object.entries(writes)) {
-    for (const role of ["anon", "staff"]) {
-      const w = await write(roles[role].client);
-      ok(`${role} NO inserta en ${t}`, denied(w), w.error?.code ?? "0 filas");
-    }
+    const a = await write(anon);
+    ok(`anon NO inserta en ${t}`, denied(a), a.error?.code ?? "0 filas");
+    const st = await write(staff.client);
+    if (STAFF_CAN_INSERT.has(t)) ok(`staff inserta en ${t}`, allowed(st), st.error?.message);
+    else ok(`staff NO inserta en ${t}`, denied(st), st.error?.code ?? "0 filas");
     const w = await write(admin.client);
     ok(`admin inserta en ${t}`, allowed(w), w.error?.message);
   }
@@ -156,10 +160,31 @@ const SERVICE_ONLY_RPC = {
     ok(`${role} NO modifica business_settings`, denied(w), w.error?.code ?? "0 filas");
     const s = await roles[role].client.from("services").update({ price: 1 }).eq("id", serviceId).select();
     ok(`${role} NO modifica services`, denied(s), s.error?.code ?? "0 filas");
-    const a = await roles[role].client.from("appointments").update({ status: "confirmed" }).eq("id", seed.data.id).select();
-    ok(`${role} NO confirma citas`, denied(a), a.error?.code ?? "0 filas");
   }
+  let a = await anon.from("appointments").update({ status: "confirmed" }).eq("id", seed.data.id).select();
+  ok("anon NO confirma citas", denied(a), a.error?.code ?? "0 filas");
+
+  // Recepción: estado y notas internas sí; mover horario, borrar o tocar clientes, no.
+  a = await staff.client.from("appointments").update({ admin_notes: "nota de recepción" }).eq("id", seed.data.id).select();
+  ok("staff guarda notas internas", allowed(a), a.error?.message);
+  a = await staff.client.from("appointments").update({ starts_at: at(tue, "12:00"), ends_at: at(tue, "12:45") }).eq("id", seed.data.id).select();
+  ok("staff NO mueve una cita de horario", a.error?.code === "42501", a.error?.code ?? "sin error");
+  a = await staff.client.from("appointments").delete().eq("id", seed.data.id).select();
+  ok("staff NO borra citas", denied(a), a.error?.code ?? "0 filas");
+  a = await staff.client.from("customers").update({ full_name: "Cambio" }).eq("phone", PHONES[0]).select();
+  ok("staff NO modifica clientes", denied(a), a.error?.code ?? "0 filas");
+  a = await staff.client.from("blocked_slots").delete().eq("reason", "prueba-permisos").select();
+  ok("staff quita bloqueos", allowed(a), a.error?.message);
+  const staffAppt = await svc.rpc("create_appointment_request", {
+    p_service_id: serviceId, p_starts_at: at(nextWeekday(3), "11:00"), p_full_name: "Prueba Recepcion", p_phone: PHONES[0],
+  });
+  a = await staff.client.from("appointments").update({ status: "confirmed" }).eq("id", staffAppt.data?.id).select();
+  ok("staff confirma citas", allowed(a), a.error?.message);
+  a = await staff.client.from("appointments").update({ status: "cancelled" }).eq("id", staffAppt.data?.id).select();
+  ok("staff cancela citas", allowed(a), a.error?.message);
   let w = await admin.client.from("business_settings").update({ name: settings.data.name }).eq("id", true).select();
+  // El seed de bloqueos se quitó arriba (prueba de staff); se vuelve a crear para los flujos.
+  await svc.from("blocked_slots").insert({ start_datetime: at(tue, "09:00"), end_datetime: at(tue, "09:30"), reason: "prueba-permisos" });
   ok("admin modifica business_settings", allowed(w), w.error?.message);
 
   // ------------------------------------------------------------------

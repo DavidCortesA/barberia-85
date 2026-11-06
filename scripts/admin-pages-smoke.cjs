@@ -5,8 +5,9 @@
  *
  * Crea usuarios temporales (staff y admin) con contraseñas aleatorias que nunca
  * se imprimen, obtiene su cookie de sesión igual que el navegador (@supabase/ssr)
- * y comprueba: anónimo → /login, staff → /login?error=sin-acceso, admin → 200 en
- * todas las pantallas y en la API del calendario. Al final borra los usuarios.
+ * y comprueba: anónimo → /login; recepción (staff) → sus pantallas y la API del
+ * calendario, y las de administración la regresan a /admin; admin → todas.
+ * Al final borra los usuarios.
  */
 const fs = require("fs");
 const path = require("path");
@@ -65,6 +66,16 @@ const ADMIN_PAGES = [
   ["/admin/schedule", "Horarios"],
   ["/admin/settings", "Configuración"],
   ["/admin/content", "Contenido"],
+  ["/admin/users", "Usuarios"],
+];
+const STAFF_PAGES = ["/admin", "/admin/appointments", "/admin/calendar", "/admin/schedule"];
+/** Pantallas solo de admin y un texto que solo aparece si la página se renderizó. */
+const ADMIN_ONLY = [
+  ["/admin/services", "Nuevo servicio"],
+  ["/admin/barbers", "Agregar barbero"],
+  ["/admin/settings", "Reglas de reserva"],
+  ["/admin/content", "Textos y fotos del sitio público"],
+  ["/admin/users", "Nueva cuenta"],
 ];
 
 (async () => {
@@ -74,14 +85,30 @@ const ADMIN_PAGES = [
   r = await get("/login");
   ok("/login responde", r.status === 200, `${r.status}`);
 
-  // Staff
+  // Recepción (staff)
   const staff = await sessionCookie("staff");
-  r = await get("/admin", staff);
-  ok("staff en /admin → /login?error=sin-acceso", r.status === 307 && (r.headers.get("location") || "").includes("sin-acceso"), `${r.status} ${r.headers.get("location")}`);
+  for (const p of STAFF_PAGES) {
+    const res = await get(p, staff);
+    const html = res.status === 200 ? await res.text() : "";
+    ok(`recepción ${p}`, res.status === 200 && !html.includes("No se pudo cargar esta sección"), `${res.status}`);
+  }
+  // Con loading.tsx la página ya va en streaming: el redirect llega como 200 con
+  // instrucción de redirección para el cliente. Lo importante: no hay contenido.
+  for (const [p, marker] of ADMIN_ONLY) {
+    const res = await get(p, staff);
+    const html = res.status === 200 ? await res.text() : "";
+    const redirected =
+      (res.status === 307 && (res.headers.get("location") || "").includes("aviso=sin-permiso")) ||
+      (res.status === 200 && html.includes("aviso=sin-permiso") && !html.includes(marker));
+    ok(`recepción NO entra a ${p} (→ /admin, sin contenido)`, redirected, `${res.status}`);
+  }
+  r = await get("/admin/schedule", staff);
+  const scheduleHtml = await r.text();
+  ok("recepción ve horarios sin editor semanal", scheduleHtml.includes("Solo la administración puede cambiarlo") && !scheduleHtml.includes("Guardar horario"));
   r = await get("/api/admin/calendar?from=2026-11-01&to=2026-11-08", staff);
-  ok("staff NO usa la API del calendario", r.status === 401, `${r.status}`);
+  ok("recepción usa la API del calendario", r.status === 200, `${r.status}`);
   r = await get("/login", staff);
-  ok("staff en /login ve el aviso (sin bucle de redirecciones)", r.status === 200 && (await r.text()).includes("no tiene acceso"), `${r.status}`);
+  ok("recepción en /login → /admin", r.status === 307, `${r.status}`);
 
   // Admin
   const admin = await sessionCookie("admin");

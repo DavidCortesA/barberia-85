@@ -7,9 +7,10 @@ import type { Database } from "@/types/database";
 /**
  * Cliente con la clave SECRETA (service role). Salta RLS.
  *
- * Uso permitido: solo el flujo público de reservas (disponibilidad y crear
- * solicitud), donde la validación ocurre en el servidor, y tareas de
- * mantenimiento. Nunca importar desde Client Components (server-only lo impide).
+ * Uso permitido: el flujo público de reservas (disponibilidad y crear
+ * solicitud), donde la validación ocurre en el servidor; el cron; y la gestión
+ * de cuentas del panel (/admin/users), siempre después de requireAdmin().
+ * Nunca importar desde Client Components (server-only lo impide).
  */
 export function createAdminClient() {
   return createClient<Database>(

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { CalendarView } from "@/components/admin/calendar/calendar-view";
 import { PageHeader } from "@/components/admin/page-header";
-import { requireAdmin } from "@/features/auth/dal";
+import { requirePanel } from "@/features/auth/dal";
 
 export const metadata: Metadata = { title: "Calendario" };
 
 export default async function CalendarPage() {
-  const { supabase } = await requireAdmin();
+  const { supabase } = await requirePanel();
   const { data: hours, error } = await supabase
     .from("business_hours")
     .select("day_of_week, opening_time, closing_time, is_closed");
