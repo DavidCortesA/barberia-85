@@ -170,3 +170,76 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ---------------------------------------------------------------
+   FullCalendar en el panel (tema oscuro de la marca)
+   --------------------------------------------------------------- */
+.admin-calendar .fc {
+  --fc-border-color: rgb(245 243 239 / 10%);
+  --fc-page-bg-color: #141414;
+  --fc-neutral-bg-color: rgb(245 243 239 / 4%);
+  --fc-neutral-text-color: #a1a1aa;
+  --fc-non-business-color: rgb(0 0 0 / 40%);
+  --fc-today-bg-color: rgb(252 164 32 / 7%);
+  --fc-now-indicator-color: #fca420;
+  --fc-event-border-color: transparent;
+  --fc-list-event-hover-bg-color: #202020;
+  --fc-button-text-color: #f5f3ef;
+  --fc-button-bg-color: #202020;
+  --fc-button-border-color: #2c2c2c;
+  --fc-button-hover-bg-color: #2c2c2c;
+  --fc-button-hover-border-color: #2c2c2c;
+  --fc-button-active-bg-color: #fca420;
+  --fc-button-active-border-color: #fca420;
+  font-size: 0.8125rem;
+}
+.admin-calendar .fc .fc-toolbar {
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.admin-calendar .fc .fc-toolbar-title {
+  font-family: var(--font-display);
+  text-transform: uppercase;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.admin-calendar .fc .fc-button {
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.45rem 0.75rem;
+  text-transform: capitalize;
+}
+.admin-calendar .fc .fc-button-primary:not(:disabled).fc-button-active,
+.admin-calendar .fc .fc-button-primary:not(:disabled):active {
+  color: #090909;
+}
+.admin-calendar .fc .fc-button:focus-visible {
+  outline: 2px solid #fca420;
+  outline-offset: 2px;
+  box-shadow: none;
+}
+.admin-calendar .fc a {
+  color: inherit;
+}
+.admin-calendar .fc .fc-event {
+  cursor: pointer;
+  border-radius: 3px;
+  font-weight: 600;
+}
+.admin-calendar .fc .fc-event:focus-visible {
+  outline: 2px solid #f5f3ef;
+  outline-offset: 1px;
+}
+.admin-calendar .fc .fc-st-cancelled,
+.admin-calendar .fc .fc-st-rejected,
+.admin-calendar .fc .fc-st-expired,
+.admin-calendar .fc .fc-st-overdue {
+  opacity: 0.75;
+  text-decoration: line-through;
+}
+.admin-calendar .fc .fc-blocked,
+.fc-blocked-swatch {
+  background: repeating-linear-gradient(135deg, rgb(240 82 79 / 30%) 0 6px, rgb(240 82 79 / 8%) 6px 12px);
+  opacity: 1;
+}

@@ -69,7 +69,7 @@ Además se recorrió el flujo completo en navegador (escritorio y móvil) contra
 
 ## Pendiente / límites conocidos
 
-- **Panel administrativo** (Fase 5): login, dashboard, calendario, citas, servicios, barberos, horarios, configuración y `/admin/content`.
+- **Panel administrativo:** hecho en la Fase 5 → [`06-panel-admin.md`](06-panel-admin.md).
 - **Límite por IP:** hoy el freno anti-abuso es por teléfono (2 pendientes) + honeypot. Cuando se despliegue conviene activar Vercel Firewall para limitar peticiones por IP a `/api/availability` y a la reserva.
 - Sin fotos reales no hay galería ni imagen de portada: se muestra el "85" en contorno. Los servicios de ejemplo (`[EJEMPLO]`) siguen visibles hasta que el admin los reemplace.
 - Logo: sigue siendo el PNG derivado; falta la versión vectorial para pantallas muy grandes y favicon.

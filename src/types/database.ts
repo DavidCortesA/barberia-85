@@ -57,6 +57,26 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"barber_hours": {
+                  Row: {
+                    "barber_id": string,"closing_time": string,"day_of_week": number,"id": string,"opening_time": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "barber_id": string,"closing_time": string,"day_of_week": number,"id"?: string,"opening_time": string
+                  }
+                  Update: {
+                    "barber_id"?: string,"closing_time"?: string,"day_of_week"?: number,"id"?: string,"opening_time"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "barber_hours_barber_id_fkey"
+      columns: ["barber_id"]
+isOneToOne: false
+      referencedRelation: "barbers"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"barbers": {
                   Row: {
                     "created_at": string,"description": string | null,"id": string,"image_url": string | null,"is_active": boolean,"name": string,"specialty": string | null,"updated_at": string
@@ -209,7 +229,13 @@ isOneToOne: false
             [_ in never]: never
           }
           Functions: {
-            "create_appointment_request":
+            "admin_replace_barber_hours":
+{ Args: { "p_barber_id": string,"p_hours": Json }; Returns: undefined
+                           },
+"admin_replace_business_hours":
+{ Args: { "p_hours": Json }; Returns: undefined
+                           },
+"create_appointment_request":
 { Args: { "p_barber_id"?: string,"p_full_name": string,"p_notes"?: string,"p_phone": string,"p_service_id": string,"p_starts_at": string }; Returns: {
               "admin_notes": string | null,
 "appointment_date": string,

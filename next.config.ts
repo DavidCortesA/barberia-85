@@ -10,6 +10,9 @@ const supabaseHost = (() => {
 })();
 
 const nextConfig: NextConfig = {
+  // En desarrollo Next registra cada Server Action con sus argumentos: eso
+  // imprimiría contraseñas (login) y datos de clientes en la terminal.
+  logging: { serverFunctions: false },
   turbopack: {
     // Evita que Next detecte lockfiles fuera del repo (p. ej. en el directorio del usuario).
     root: process.cwd(),

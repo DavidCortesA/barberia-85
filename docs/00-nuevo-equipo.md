@@ -3,7 +3,7 @@
 Guía para continuar **85 BARBERÍA** desde cero en una computadora nueva. Lo único que NO viaja con el repositorio son tus claves (`.env.local`); todo lo demás está en GitHub.
 
 - Repositorio: <https://github.com/DavidCortesA/barberia-85> (rama `main`)
-- Estado: Fases 1–4 completas (tags `v0.1.0` a `v0.4.0`). Siguen las Fases 5 y 6 → [`docs/05-fases-restantes.md`](05-fases-restantes.md)
+- Estado: Fases 1–5 completas (tags `v0.1.0` a `v0.5.0`). Sigue la Fase 6 → [`docs/05-fases-restantes.md`](05-fases-restantes.md)
 
 ## 1. Requisitos
 
@@ -54,19 +54,21 @@ Reglas de oro: las claves **no** se pegan en chats, issues ni commits; si alguna
 
 ```bash
 npm run dev          # servidor local en http://localhost:3000
-npm test             # 51 pruebas unitarias (Vitest, no tocan la base)
+npm test             # 83 pruebas unitarias (Vitest, no tocan la base)
 npm run typecheck    # next typegen + tsc
 npm run lint
 npm run build
 
-npm run test:db      # 37 pruebas contra la base REAL (crea y borra datos de prueba)
+npm run test:db      # 37 + 108 pruebas contra la base REAL (reglas, permisos, flujos del panel; crea y borra datos y usuarios de prueba)
+npm run test:pages   # humo HTTP del panel con sesión (requiere npm run dev en otra terminal)
+npm run admin:create # crea o promueve el usuario administrador (pide correo y contraseña)
 npm run db:status    # ¿faltan migraciones por aplicar? (simulación)
 npm run db:push      # aplica migraciones nuevas de supabase/migrations
 npm run db:seed      # migraciones + supabase/seed.sql (datos de ejemplo)
 npm run db:types     # regenera src/types/database.ts tras cambiar el esquema
 ```
 
-La base remota **ya tiene** las 4 migraciones aplicadas y los datos de ejemplo; en un equipo nuevo no hay que volver a correrlas. Para comprobarlo: `npm run db:status` debe decir *Remote database is up to date*.
+La base remota **ya tiene** las 7 migraciones aplicadas y los datos de ejemplo; en un equipo nuevo no hay que volver a correrlas. Para comprobarlo: `npm run db:status` debe decir *Remote database is up to date*.
 
 Antes de dar algo por terminado: `npm run typecheck && npm run lint && npm test && npm run build`.
 
@@ -97,7 +99,9 @@ La memoria de Claude Code **no viaja** entre equipos: todo el contexto está en 
 - **shadcn/ui** usa el estilo `base-nova` sobre `@base-ui/react`: los componentes usan la prop `render`, no `asChild`. `cn` viene del paquete `cn` (`import { cn } from "cn"`), y `src/lib/utils.ts` lo reexporta.
 - `lucide-react` v1 ya no trae iconos de marcas: los de redes están en `src/components/shared/social-icons.tsx`.
 - `npm run typecheck` ejecuta antes `next typegen` (genera los tipos globales como `LayoutProps`).
-- Las páginas públicas usan `createPublicClient()` (sin cookies) para poder ser estáticas con revalidación de 60 s; el panel admin usará el cliente con sesión (`createClient()` de `server.ts`).
+- Las páginas públicas usan `createPublicClient()` (sin cookies) para poder ser estáticas con revalidación de 60 s; el panel admin usa el cliente con sesión (`createClient()` de `server.ts`) a través de `requireAdmin()`.
+- `@base-ui/react`: `AlertDialogTrigger`/`DropdownMenuTrigger` reciben el botón en `render={<Button … />}`. ESLint (React Compiler) marca `form.watch()`: usa `useWatch({ control, name })`.
+- FullCalendar se fijó en la v6 (`6.1.22`, compatible con React 19); la v7 cambia la API. Se carga solo en el navegador (`next/dynamic`, `ssr: false`).
 - `createAdminClient()` (clave secreta) solo se usa en el flujo público de reservas y en tareas de mantenimiento. Tiene `server-only`.
 - ESLint (`react-hooks`) prohíbe construir JSX dentro de `try/catch` y hacer `setState` síncrono dentro de `useEffect`; ya hay patrones resueltos en `reservar/page.tsx` y `slot-picker.tsx`.
 - Lo que `npm test` no cubre (la BD real) lo cubre `npm run test:db`.
@@ -111,3 +115,4 @@ La memoria de Claude Code **no viaja** entre equipos: todo el contexto está en 
 | [`03-configuracion.md`](03-configuracion.md) | Stack, decisiones técnicas, esquema y reglas de la base |
 | [`04-sitio-publico.md`](04-sitio-publico.md) | Rutas públicas, reserva, contenido administrable |
 | [`05-fases-restantes.md`](05-fases-restantes.md) | Plan detallado de las Fases 5 y 6 y datos pendientes del cliente |
+| [`06-panel-admin.md`](06-panel-admin.md) | Panel administrativo: primer acceso, rutas, seguridad, imágenes, pruebas |

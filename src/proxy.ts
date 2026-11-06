@@ -17,13 +17,8 @@ export async function proxy(request: NextRequest) {
     return redirectWithCookies(url, response);
   }
 
-  if (pathname === "/login" && claims) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/admin";
-    url.search = "";
-    return redirectWithCookies(url, response);
-  }
-
+  // /login con sesión NO se redirige aquí: el proxy no conoce el rol y un usuario
+  // `staff` entraría en un bucle /login ↔ /admin. La página de login lo resuelve.
   return response ?? NextResponse.next();
 }
 

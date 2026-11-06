@@ -6,7 +6,9 @@ Plan detallado de lo que falta para tener el producto en producción. Cada fase 
 
 ---
 
-## Fase 5 — Panel administrativo (`v0.5.0`)
+## Fase 5 — Panel administrativo (`v0.5.0`) ✅
+
+> **Hecha.** Lo construido y cómo usarlo: [`06-panel-admin.md`](06-panel-admin.md). El usuario admin se crea con `npm run admin:create` (punto 5.0).
 
 ### Objetivo
 
@@ -107,13 +109,13 @@ Todo texto y foto del sitio público debe poder cambiarse desde el panel. El mod
 
 ### Criterios de aceptación de la Fase 5
 
-- [ ] Login funciona; `/admin/*` protegido para anónimos y para `staff`.
-- [ ] Confirmar, rechazar, cancelar y completar citas con sus errores comprensibles.
-- [ ] Calendario con vistas, filtros y colores por estado.
-- [ ] CRUD de servicios con foto; barberos opcional; horarios con excepciones y bloqueos; configuración.
-- [ ] `/admin/content` edita textos y fotos y el sitio público se actualiza.
-- [ ] Estados de carga, vacío y error, confirmaciones y toasts en todas las pantallas.
-- [ ] Verificaciones en verde y `v0.5.0` subido.
+- [x] Login funciona; `/admin/*` protegido para anónimos y para `staff`.
+- [x] Confirmar, rechazar, cancelar y completar citas con sus errores comprensibles.
+- [x] Calendario con vistas, filtros y colores por estado.
+- [x] CRUD de servicios con foto; barberos opcional; horarios con excepciones y bloqueos; configuración.
+- [x] `/admin/content` edita textos y fotos y el sitio público se actualiza.
+- [x] Estados de carga, vacío y error, confirmaciones y toasts en todas las pantallas.
+- [x] Verificaciones en verde y `v0.5.0`.
 
 ---
 

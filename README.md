@@ -12,7 +12,7 @@ Sitio web público y sistema de reservaciones para **85 BARBERÍA** (México, zo
 | 2 | Diseño (sistema visual, tablero, logo) | ✅ `v0.2.0` |
 | 3 | Configuración (Next, Supabase, migraciones, RLS) | ✅ `v0.3.0` |
 | 4 | Sitio público y reservaciones | ✅ `v0.4.0` |
-| 5 | Panel administrativo (incluye editor de contenido) | ⏳ pendiente |
+| 5 | Panel administrativo (incluye editor de contenido) | ✅ `v0.5.0` |
 | 6 | Pruebas, seguridad y despliegue en Vercel | ⏳ pendiente |
 
 ## Empezar
@@ -21,6 +21,7 @@ Sitio web público y sistema de reservaciones para **85 BARBERÍA** (México, zo
 npm install
 cp .env.example .env.local   # rellena las claves (ver docs/00-nuevo-equipo.md)
 npm run dev                  # http://localhost:3000
+npm run admin:create         # crea el usuario administrador (una vez) → /login
 ```
 
 Verificación completa: `npm run typecheck && npm run lint && npm test && npm run build`.
@@ -29,6 +30,7 @@ Verificación completa: `npm run typecheck && npm run lint && npm test && npm ru
 
 - [`docs/00-nuevo-equipo.md`](docs/00-nuevo-equipo.md): cómo retomar el proyecto en otro equipo, variables, comandos y acuerdos de trabajo
 - [`docs/05-fases-restantes.md`](docs/05-fases-restantes.md): **qué sigue** (Fases 5 y 6) y datos pendientes del cliente
+- [`docs/06-panel-admin.md`](docs/06-panel-admin.md): panel administrativo (primer acceso, rutas, seguridad, imágenes)
 - [`docs/02-diseno.md`](docs/02-diseno.md) · [`docs/03-configuracion.md`](docs/03-configuracion.md) · [`docs/04-sitio-publico.md`](docs/04-sitio-publico.md)
 - Tablero visual: [`docs/design/board.html`](docs/design/board.html)
 

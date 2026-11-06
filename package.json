@@ -14,11 +14,18 @@
     "db:seed": "node scripts/db.mjs seed",
     "db:status": "node scripts/db.mjs status",
     "db:types": "node scripts/db.mjs types",
-    "test:db": "node scripts/db-smoke.cjs"
+    "admin:create": "node scripts/create-admin.mjs",
+    "test:db": "node scripts/db-smoke.cjs && node scripts/db-permissions.cjs",
+    "test:pages": "node scripts/admin-pages-smoke.cjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
     "@date-fns/tz": "^1.5.0",
+    "@fullcalendar/core": "^6.1.22",
+    "@fullcalendar/daygrid": "^6.1.22",
+    "@fullcalendar/interaction": "^6.1.22",
+    "@fullcalendar/react": "^6.1.22",
+    "@fullcalendar/timegrid": "^6.1.22",
     "@hookform/resolvers": "^7.0.3",
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",

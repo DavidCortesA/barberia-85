@@ -18,7 +18,7 @@
 
 - **`cacheComponents` desactivado.** La plantilla de Next 16.4 lo trae activo; lo quité para que las páginas con cookies (admin) no exijan `<Suspense>` en cada ruta. Se puede reevaluar cuando Next lo haga obligatorio.
 - **Dependencias fuera del listado original y su razón:** `@supabase/supabase-js` + `@supabase/ssr` (cliente y sesión por cookies), `@hookform/resolvers` (Zod ↔ RHF), `@date-fns/tz` (zonas horarias), `motion` (animaciones pedidas), `server-only` (impide importar módulos secretos en el cliente), `supabase` (CLI, dev) para migraciones y tipos. Las agregan shadcn: `@base-ui/react`, `class-variance-authority`, `cn`, `lucide-react`, `react-day-picker`, `tw-animate-css`.
-- **Pendiente de instalar cuando se necesiten:** FullCalendar (Fase 5) y Vitest (Fase 4, lógica de disponibilidad).
+- **Agregadas después:** Vitest (Fase 4) y FullCalendar 6.1 (`@fullcalendar/react`, `core`, `daygrid`, `timegrid`, `interaction`; Fase 5, calendario del panel).
 - Tokens renombrados respecto al diseño: `amber-*` → `brand-*` para no pisar la escala `amber` de Tailwind.
 
 ## Base de datos (Supabase)
@@ -30,6 +30,10 @@ Migraciones en `supabase/migrations/` (ya aplicadas al proyecto remoto) y datos 
 | `…170000_schema.sql` | Tipos, 10 tablas, constraints (exclusión de citas confirmadas traslapadas, rangos, formato de teléfono), índices, perfil automático al crear usuario |
 | `…170100_functions.sql` | `is_admin()`, validación de horario, trigger de integridad (transiciones de estado, campos inmutables, bloqueos), historial de estados, `create_appointment_request()`, `get_busy_intervals()`, `expire_stale_pending()` |
 | `…170200_rls.sql` | RLS en todas las tablas, permisos mínimos, bucket `media` y sus políticas |
+| `…180000_content.sql` | `site_content` y `gallery_images` (Fase 4) |
+| `…120000_admin.sql` | `admin_replace_business_hours(jsonb)`: horario semanal en una transacción (Fase 5) |
+| `…120100_media_select.sql` | Política SELECT de `storage.objects` para el admin (necesaria para borrar fotos) |
+| `…130000_barber_hours.sql` | Horario de trabajo por barbero y `admin_replace_barber_hours()` |
 
 Reglas implementadas en la base: pendiente bloquea el horario `pending_hold_minutes` (3 h por defecto); confirmada bloquea siempre y la BD lo garantiza; máximo 2 pendientes por teléfono; aviso mínimo, anticipación máxima y alineación a `slot_interval_minutes`.
 

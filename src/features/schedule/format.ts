@@ -15,22 +15,22 @@ const DISPLAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
 
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
-function dayValue(rows: readonly WeeklyRow[], dow: number): string {
+function dayValue(rows: readonly WeeklyRow[], dow: number, offLabel: string): string {
   const ranges = rows
     .filter((r) => r.day_of_week === dow && !r.is_closed && r.opening_time && r.closing_time)
     .sort((a, b) => a.opening_time!.localeCompare(b.opening_time!))
     .map((r) => `${formatTime12(r.opening_time!.slice(0, 5))} – ${formatTime12(r.closing_time!.slice(0, 5))}`);
-  return ranges.length > 0 ? ranges.join(", ") : "Cerrado";
+  return ranges.length > 0 ? ranges.join(", ") : offLabel;
 }
 
 /**
  * Resume el horario semanal agrupando días consecutivos con el mismo horario:
  * "Lunes a sábado · 10:00 a. m. – 7:00 p. m." / "Domingo · Cerrado".
  */
-export function summarizeWeeklyHours(rows: readonly WeeklyRow[]): HoursLine[] {
+export function summarizeWeeklyHours(rows: readonly WeeklyRow[], offLabel = "Cerrado"): HoursLine[] {
   const groups: { days: number[]; value: string }[] = [];
   for (const dow of DISPLAY_ORDER) {
-    const value = dayValue(rows, dow);
+    const value = dayValue(rows, dow, offLabel);
     const last = groups[groups.length - 1];
     if (last && last.value === value) last.days.push(dow);
     else groups.push({ days: [dow], value });
