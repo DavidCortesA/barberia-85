@@ -186,7 +186,7 @@ function AdminNotes({ id, initial }: { id: string; initial: string }) {
         onChange={(e) => setValue(e.target.value)}
         maxLength={500}
         rows={3}
-        placeholder="Solo las ve la administración."
+        placeholder="Solo las ve el equipo de la barbería."
       />
       <div className="mt-2 flex items-center justify-between">
         <span className="text-muted-foreground text-xs">{value.length}/500</span>

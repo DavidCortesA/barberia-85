@@ -2,9 +2,13 @@
 
 Guía para quien administra la barbería día a día. No necesitas saber de programación.
 
+> Las capturas usan citas y nombres de demostración, no datos reales.
+
 - **Dirección del panel:** `https://<tu-dominio>/login` (en pruebas: `http://localhost:3000/login`).
 - **Funciona en celular, tablet y computadora.** En el celular el menú está abajo; "Más" abre el resto de las opciones.
 - Cada cambio muestra un aviso abajo/arriba de la pantalla: verde si se guardó, rojo si algo falló (con el motivo).
+
+![El panel en el celular: menú inferior con Inicio, Citas, Calendario y Más](manual/15-celular.jpg)
 
 ---
 
@@ -29,6 +33,8 @@ Guía para quien administra la barbería día a día. No necesitas saber de prog
 - **Próximas citas:** confirma o rechaza desde aquí, o toca el nombre para ver el detalle.
 - **Últimos 7 días:** cuántas citas hubo cada día, por color de estado.
 
+![Pantalla de inicio con tarjetas de resumen, próximas citas y actividad de la semana](manual/01-inicio.jpg)
+
 ## 4. Citas
 
 ### Estados
@@ -49,6 +55,8 @@ Guía para quien administra la barbería día a día. No necesitas saber de prog
 3. Aparece el botón **WhatsApp**: ábrelo y envía el mensaje ya escrito al cliente. *(El sistema no envía mensajes solo; tú decides cuándo enviarlo.)*
 4. Si otras personas habían pedido ese mismo horario, el panel te ofrece **rechazarlas** de una vez.
 
+![Ventana para confirmar una cita](manual/04-confirmar.jpg)
+
 ### Otras acciones
 
 - **Rechazar:** no puedes atender esa solicitud. Avísale al cliente por WhatsApp desde el detalle.
@@ -57,9 +65,13 @@ Guía para quien administra la barbería día a día. No necesitas saber de prog
 - **Notas internas:** en el detalle de la cita. Solo las ve el equipo, nunca el cliente.
 - **Historial:** en el detalle ves quién cambió el estado y cuándo.
 
+![Detalle de una cita con datos, acciones, notas del cliente, notas internas e historial](manual/03-detalle-cita.jpg)
+
 ### Buscar
 
 Arriba de la tabla: busca por **nombre o teléfono**, filtra por **estado**, por **periodo** (hoy en adelante, pasadas, todas) o por **fecha**. **Limpiar** quita los filtros.
+
+![Lista de citas con búsqueda, filtros y estado de cada una](manual/02-citas.jpg)
 
 ### Mensajes de error frecuentes
 
@@ -76,11 +88,17 @@ Arriba de la tabla: busca por **nombre o teléfono**, filtra por **estado**, por
 - Las **franjas rayadas** son bloqueos de agenda; las zonas más oscuras, horas en que la barbería está cerrada.
 - Toca una cita para abrir su detalle con las mismas acciones de **Citas**.
 
+![Calendario semanal con citas por color de estado y un bloqueo rayado](manual/05-calendario.jpg)
+
 ## 6. Horarios
 
 - **Horario semanal** *(Administración)*: activa o desactiva cada día y pon el horario. **Agregar rango** sirve para cerrar a la hora de comida (por ejemplo, 10:00–14:00 y 15:00–19:00). Toca **Guardar horario**.
+
+![Editor del horario semanal](manual/06-horario-semanal.jpg)
 - **Días especiales** *(Administración)*: un festivo o vacaciones (**Cerrado**) o un día con **Horario especial**. Ese día reemplaza al horario semanal.
 - **Bloqueos de agenda** *(Recepción y Administración)*: aparta un rango para que nadie reserve (trámite, comida, evento). Puede abarcar varios días. **Ojo:** un bloqueo no cancela las citas ya confirmadas en ese rango; el panel te avisa si hay alguna para que decidas.
+
+![Días especiales y bloqueos de agenda](manual/07-dias-especiales-bloqueos.jpg)
 
 ## 7. Servicios *(Administración)*
 
@@ -89,6 +107,10 @@ Arriba de la tabla: busca por **nombre o teléfono**, filtra por **estado**, por
 - **Flechas ↑ ↓:** cambian el orden en el sitio.
 - **Eliminar:** solo funciona si el servicio nunca se ha reservado. Si ya tiene citas, **desactívalo**.
 - Los cambios de precio no afectan a las citas ya pedidas: cada una guarda el precio con el que se solicitó.
+
+![Lista de servicios con activo, orden, editar y eliminar](manual/08-servicios.jpg)
+
+![Formulario para editar un servicio](manual/09-editar-servicio.jpg)
 
 ## 8. Barberos *(Administración)*
 
@@ -107,6 +129,12 @@ Todos los textos y fotos del sitio público, por pestañas: **Portada, Servicios
 - Toca **Guardar** en cada pestaña. Los cambios se ven en el sitio de inmediato (recarga la página del sitio).
 - **Ver sitio** abre la página pública en otra pestaña.
 
+![Editor de contenido con pestañas por sección](manual/10-contenido.jpg)
+
+![Campo de foto de fondo de un paso de Cómo reservar](manual/11-pasos-foto.jpg)
+
+![Gestor de la galería con texto alternativo, visibilidad y orden](manual/12-galeria.jpg)
+
 **Fotos recomendadas:** portada vertical (4:5) de al menos 1200 px de alto; "Nosotros" horizontal (4:3); galería de 6 a 8 fotos de cortes e instalaciones. Las fotos que vienen de ejemplo son de Unsplash; lo ideal es reemplazarlas por fotos reales de la barbería.
 
 ## 10. Configuración *(Administración)*
@@ -121,6 +149,8 @@ Todos los textos y fotos del sitio público, por pestañas: **Portada, Servicios
   - *Pendientes por teléfono:* cuántas solicitudes abiertas puede tener un mismo número (evita abusos).
 - **Guardar cambios** aparece cuando modificas algo; **Descartar** deshace.
 
+![Configuración del negocio y contacto](manual/13-configuracion.jpg)
+
 ## 11. Usuarios *(Administración)*
 
 - **Nueva cuenta:** nombre, correo, contraseña inicial (12+ caracteres) y rol. Entrégale la contraseña en persona.
@@ -128,6 +158,8 @@ Todos los textos y fotos del sitio público, por pestañas: **Portada, Servicios
 - **Contraseña:** pon una nueva si alguien la olvidó.
 - **Eliminar:** la persona deja de tener acceso; sus citas atendidas se conservan.
 - No puedes cambiar tu propio rol ni eliminarte (así nunca se queda la barbería sin administrador).
+
+![Pantalla de usuarios con rol, contraseña y eliminar](manual/14-usuarios.jpg)
 
 ## 12. Si algo falla
 
