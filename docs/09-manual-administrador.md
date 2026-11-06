@@ -14,7 +14,7 @@ Guía para quien administra la barbería día a día. No necesitas saber de prog
 
 ## 1. Entrar y salir
 
-1. Abre `/login`, escribe tu correo y contraseña y toca **Entrar**.
+1. Abre `/login`, escribe tu correo y contraseña y toca **Entrar**. El ícono del ojo junto a la contraseña la muestra u oculta para revisar que esté bien escrita.
 2. Para salir: **Cerrar sesión** (barra lateral; en el celular, dentro de **Más**).
 3. ¿Olvidaste la contraseña? Pídele a otra persona con rol **Administración** que te ponga una nueva en **Usuarios → Contraseña**. Si eres la única cuenta de administración, quien dio soporte técnico puede restablecerla.
 
@@ -26,6 +26,24 @@ Guía para quien administra la barbería día a día. No necesitas saber de prog
 |---|---|
 | **Recepción** | Ver el inicio, atender citas (confirmar, rechazar, cancelar, completar, notas, WhatsApp), ver el calendario, ver el horario y poner o quitar bloqueos de agenda |
 | **Administración** | Todo lo anterior, además de servicios, barberos, horario de atención, contenido del sitio, configuración y usuarios |
+
+### Si tu cuenta es de Recepción
+
+Tu menú solo muestra **Inicio, Citas, Calendario y Horarios**, y arriba a la derecha aparece la etiqueta **Recepción**. Atiendes las citas igual que en las secciones 3 a 5.
+
+![Inicio con una cuenta de Recepción: el menú solo tiene Inicio, Citas, Calendario y Horarios](manual/16-recepcion-inicio.jpg)
+
+En **Horarios** ves el horario de atención (sin poder cambiarlo) y puedes **agregar o quitar bloqueos de agenda**.
+
+![Horarios con una cuenta de Recepción: horario de solo lectura y bloqueos de agenda](manual/17-recepcion-horarios.jpg)
+
+Si abres una sección de administración (por ejemplo, desde un enlace), el panel te regresa al inicio con este aviso:
+
+![Aviso de sección solo para la administración](manual/18-recepcion-aviso.jpg)
+
+En el celular, **Más** solo muestra **Horarios** y **Cerrar sesión**.
+
+![Menú Más en el celular con una cuenta de Recepción](manual/19-recepcion-celular.jpg)
 
 ## 3. Inicio
 

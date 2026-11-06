@@ -7,6 +7,7 @@ import { KeyRound, Plus, Trash2 } from "lucide-react";
 import { ConfirmDialog } from "@/components/admin/confirm-dialog";
 import { describedBy, FormField, NativeSelect } from "@/components/admin/form-field";
 import { useSheetSession } from "@/components/admin/use-sheet-content";
+import { PasswordInput } from "@/components/admin/password-input";
 import { useServerAction } from "@/components/admin/use-server-action";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -130,9 +131,8 @@ function CreateUserForm({ onDone }: { onDone: () => void }) {
           error={errors.password?.message}
           hint="Mínimo 12 caracteres. Compártela en persona; la persona puede pedirte cambiarla."
         >
-          <Input
+          <PasswordInput
             id="u-password"
-            type="password"
             className="h-10"
             autoComplete="new-password"
             aria-invalid={!!errors.password}
@@ -196,8 +196,7 @@ function PasswordDialog({ user, onClose }: { user: PanelUser | null; onClose: ()
           <DialogDescription>Para {user?.name || user?.email}. Compártela en persona.</DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
-          <Input
-            type="password"
+          <PasswordInput
             autoComplete="new-password"
             aria-label="Nueva contraseña"
             value={password}

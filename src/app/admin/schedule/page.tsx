@@ -51,7 +51,7 @@ export default async function ScheduleAdminPage() {
             </dl>
           </Panel>
         )}
-        <div className="grid gap-6 xl:grid-cols-2">
+        <div className={isAdmin ? "grid gap-6 xl:grid-cols-2" : "max-w-3xl"}>
           {isAdmin && <ExceptionsEditor exceptions={excRes.data ?? []} today={today} />}
           <BlockedSlotsEditor
             today={today}
