@@ -42,3 +42,8 @@ Thumbs.db
 .idea
 .vscode/*
 !.vscode/extensions.json
+
+# respaldos locales (contienen datos de clientes)
+/respaldo*
+/backup/
+*.tar.gz.enc

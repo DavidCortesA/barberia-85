@@ -121,6 +121,8 @@ Todo texto y foto del sitio público debe poder cambiarse desde el panel. El mod
 
 ## Fase 6 — Pruebas, seguridad y despliegue (`v0.6.0` → `v1.0.0`)
 
+> **Avance:** listo 6.1 (pruebas: unitarias, matriz de permisos por rol, humo HTTP), 6.2 (cabeceras y CSP, sin secretos en el bundle ni en git), 6.3 (accesibilidad 100 en Lighthouse, rediseño en [`07-sitio-rediseno.md`](07-sitio-rediseno.md)), respaldo semanal ([`08-respaldos.md`](08-respaldos.md), falta cargar los secretos) y manual ([`09-manual-administrador.md`](09-manual-administrador.md)). **Pendiente:** despliegue en Vercel (6.4) y prueba de humo en producción.
+
 ### 6.1 Pruebas
 
 - Mantener `npm test` (unitarias) y `npm run test:db` (37 comprobaciones contra la base real, incluida la concurrencia de 8 solicitudes simultáneas al mismo horario: solo 1 gana).

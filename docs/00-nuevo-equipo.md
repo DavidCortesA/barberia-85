@@ -118,3 +118,5 @@ La memoria de Claude Code **no viaja** entre equipos: todo el contexto está en 
 | [`05-fases-restantes.md`](05-fases-restantes.md) | Plan detallado de las Fases 5 y 6 y datos pendientes del cliente |
 | [`06-panel-admin.md`](06-panel-admin.md) | Panel administrativo: primer acceso, rutas, seguridad, imágenes, pruebas |
 | [`07-sitio-rediseno.md`](07-sitio-rediseno.md) | Rediseño del sitio público, marca, páginas legales, cookies y analítica |
+| [`08-respaldos.md`](08-respaldos.md) | Respaldo semanal cifrado: activarlo y restaurar |
+| [`09-manual-administrador.md`](09-manual-administrador.md) | Manual del panel para la barbería |

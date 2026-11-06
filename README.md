@@ -32,6 +32,8 @@ Verificación completa: `npm run typecheck && npm run lint && npm test && npm ru
 - [`docs/05-fases-restantes.md`](docs/05-fases-restantes.md): **qué sigue** (Fases 5 y 6) y datos pendientes del cliente
 - [`docs/06-panel-admin.md`](docs/06-panel-admin.md): panel administrativo (primer acceso, rutas, seguridad, imágenes)
 - [`docs/07-sitio-rediseno.md`](docs/07-sitio-rediseno.md): rediseño de la portada, marca, páginas legales, cookies y analítica
+- [`docs/08-respaldos.md`](docs/08-respaldos.md): respaldo semanal cifrado (activar y restaurar)
+- [`docs/09-manual-administrador.md`](docs/09-manual-administrador.md): **manual del panel** para la barbería
 - [`docs/02-diseno.md`](docs/02-diseno.md) · [`docs/03-configuracion.md`](docs/03-configuracion.md) · [`docs/04-sitio-publico.md`](docs/04-sitio-publico.md)
 - Tablero visual: [`docs/design/board.html`](docs/design/board.html)
 

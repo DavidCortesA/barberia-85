@@ -1,0 +1,85 @@
+# Respaldo semanal de 85 BARBERÍA: base de datos (Supabase) + fotos del bucket.
+# Se guarda CIFRADO (AES-256) como artefacto del workflow durante 90 días.
+# El repositorio es público: sin cifrado, cualquiera podría descargar datos de clientes.
+#
+# Secretos necesarios (Settings → Secrets and variables → Actions), ver docs/08-respaldos.md:
+#   SUPABASE_DB_URL            postgresql://postgres.<ref>:<password>@aws-0-us-east-1.pooler.supabase.com:5432/postgres
+#   NEXT_PUBLIC_SUPABASE_URL   https://<ref>.supabase.co
+#   SUPABASE_SECRET_KEY        clave secreta (solo para leer el bucket)
+#   BACKUP_PASSPHRASE          frase larga para cifrar; sin ella no se puede abrir el respaldo
+name: Respaldo semanal
+
+on:
+  schedule:
+    - cron: "0 9 * * 0" # domingo 09:00 UTC = 03:00 en Monterrey
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: db-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+    steps:
+      - name: Verificar secretos
+        run: |
+          missing=""
+          for v in SUPABASE_DB_URL NEXT_PUBLIC_SUPABASE_URL SUPABASE_SECRET_KEY BACKUP_PASSPHRASE; do
+            [ -n "${!v}" ] || missing="$missing $v"
+          done
+          if [ -n "$missing" ]; then
+            echo "::error::Faltan secretos:$missing (ver docs/08-respaldos.md)"
+            exit 1
+          fi
+          if [ "${#BACKUP_PASSPHRASE}" -lt 16 ]; then
+            echo "::error::BACKUP_PASSPHRASE debe tener al menos 16 caracteres"
+            exit 1
+          fi
+
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 3.0.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Volcar base de datos (roles, esquema y datos)
+        run: |
+          mkdir -p backup
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/roles.sql --role-only
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/schema.sql
+          supabase db dump --db-url "$SUPABASE_DB_URL" -f backup/data.sql --use-copy --data-only
+          test -s backup/schema.sql && test -s backup/data.sql
+
+      - name: Descargar fotos del bucket
+        run: node scripts/backup-media.mjs backup
+
+      - name: Empaquetar y cifrar
+        run: |
+          stamp="$(date -u +%Y-%m-%d)"
+          echo "STAMP=$stamp" >> "$GITHUB_ENV"
+          tar czf respaldo.tar.gz backup
+          openssl enc -aes-256-cbc -pbkdf2 -iter 200000 -salt -pass env:BACKUP_PASSPHRASE \
+            -in respaldo.tar.gz -out "respaldo-85barberia-$stamp.tar.gz.enc"
+          rm -rf backup respaldo.tar.gz
+          ls -lh respaldo-85barberia-*.enc
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: respaldo-85barberia-${{ env.STAMP }}
+          path: respaldo-85barberia-*.tar.gz.enc
+          retention-days: 90
+          if-no-files-found: error
