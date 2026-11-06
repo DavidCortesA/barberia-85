@@ -97,29 +97,30 @@ export function ProcessSection({ eyebrow, title, steps }: { eyebrow: string; tit
             >
               {step.image && (
                 <>
-                  {/* Foto en blanco y negro; al pasar el cursor recupera el color y crece */}
+                  {/* Foto en blanco y negro; al pasar el cursor recupera el color y crece poco a poco */}
                   <Image
                     src={step.image}
                     alt={step.title}
                     fill
                     sizes="(min-width: 1024px) 480px, (min-width: 640px) 50vw, 100vw"
-                    className="-z-20 object-cover grayscale transition-[filter,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110 group-hover:grayscale-0"
+                    className="-z-20 object-cover grayscale transition-[filter,transform] duration-[1400ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover:scale-[1.06] group-hover:grayscale-0"
                   />
                   {/* Difuminado negro de derecha a izquierda (transparente a la izquierda) */}
                   <div aria-hidden="true" className="from-ink-950 via-ink-950/75 absolute inset-0 -z-10 bg-gradient-to-l via-40% to-transparent" />
                 </>
               )}
-              <div className={"flex h-full flex-col justify-between gap-10 p-7 sm:p-9 " + (step.image ? "ml-auto w-[68%] items-end text-right" : "")}>
-                <div className={"flex w-full items-start justify-between gap-4 " + (step.image ? "flex-row-reverse" : "")}>
-                  <span
-                    aria-hidden="true"
-                    className="font-display text-[6rem] leading-none font-bold text-transparent sm:text-[7rem]"
-                    style={{ WebkitTextStroke: "1.5px rgb(245 243 239 / 0.45)" }}
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <RevealIcon name={ICONS[i % ICONS.length]} delay={0.1} className="text-primary size-14 sm:size-16" />
-                </div>
+              {/* Ícono en la esquina inferior izquierda, encima de la foto */}
+              <div className="absolute bottom-7 left-7 z-10 drop-shadow-[0_2px_10px_rgb(0_0_0/0.85)] sm:bottom-9 sm:left-9">
+                <RevealIcon name={ICONS[i % ICONS.length]} delay={0.1} className="text-primary size-14 sm:size-16" />
+              </div>
+              <div className="ml-auto flex h-full w-[68%] flex-col items-end justify-between gap-10 p-7 text-right sm:p-9">
+                <span
+                  aria-hidden="true"
+                  className="font-display text-[6rem] leading-none font-bold text-transparent sm:text-[7rem]"
+                  style={{ WebkitTextStroke: "1.5px rgb(245 243 239 / 0.45)" }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
                 <div>
                   <h3 className="font-display text-3xl font-bold sm:text-4xl">{step.title}</h3>
                   <p className="text-muted-foreground mt-3 max-w-[36ch] text-pretty">{step.text}</p>
